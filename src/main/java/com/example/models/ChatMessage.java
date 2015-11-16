@@ -1,14 +1,14 @@
-package com.example.services;
+package com.example.models;
 
-public class ChatObject {
+public class ChatMessage {
 	private String userName;
 	private String message;
 
-	public ChatObject() {
+	public ChatMessage() {
 
 	}
 
-	public ChatObject(String userName, String message) {
+	public ChatMessage(String userName, String message) {
 		super();
 		this.userName = userName;
 		this.message = message;

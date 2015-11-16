@@ -1,28 +1,20 @@
 package com.example.services;
 
-import com.example.daos.UserRepo;
 import com.example.models.User;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.concurrent.ConcurrentHashMap;
+public interface UserService {
 
-@Component
-public class UserService {
-    @Autowired
-    UserRepo userRepo;
+    @NotNull
+    User getCurrentUser();
 
-    private ConcurrentHashMap<Long, Integer> userMap = new ConcurrentHashMap<>();
+    int getCurrentUserId();
 
-    public User getCurrentUser() {
-        long threadId = Thread.currentThread().getId();
-        Integer userId = userMap.get(threadId);
-        User user = userRepo.findOne(userId);
-        return user;
-    }
+    void addUser(int userId);
 
-    public void addUser(int userId) {
-        long threadId = Thread.currentThread().getId();
-        userMap.put(threadId, userId);
-    }
+    boolean currentUserIsHisFriend(int UserId);
+
+    boolean currentUserIsHisFan(int UserId);
+
+    boolean currentUserIsHisFollwing(int UserId);
 }

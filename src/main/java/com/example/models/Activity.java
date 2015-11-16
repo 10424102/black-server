@@ -55,7 +55,7 @@ public class Activity {
 
     @ManyToOne
     @JoinColumn(name = "group_id")
-    private Group group;
+    private UserGroup group;
 
     @OneToMany
     @JoinTable(name = "T_ACTIVITY_IMAGE",
@@ -171,11 +171,11 @@ public class Activity {
         this.title = title;
     }
 
-    public Group getGroup() {
+    public UserGroup getGroup() {
         return group;
     }
 
-    public void setGroup(Group group) {
+    public void setGroup(UserGroup group) {
         this.group = group;
     }
 
@@ -210,7 +210,7 @@ public class Activity {
         return null;
     }
 
-    public Integer getGroupId() {
+    public Long getGroupId() {
         if (group != null) {
             return group.getId();
         }

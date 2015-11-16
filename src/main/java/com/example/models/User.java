@@ -26,17 +26,26 @@ public class User {
     @Embedded
     private RegistrationInfo regInfo = new RegistrationInfo();
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "T_SUBSCRIPTION",
+    @ManyToMany
+    @JoinTable(
+            name = "T_SUBSCRIPTION",
             joinColumns = @JoinColumn(name = "subscriber_id"),
-            inverseJoinColumns = @JoinColumn(name = "broadcaster_id"))
-    private Set<User> following = new HashSet<>();
+            inverseJoinColumns = @JoinColumn(name = "broadcaster_id")
+    )
+    private Set<User> focuses = new HashSet<>();
 
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "following")
-    private Set<User> followed = new HashSet<>();
+    @ManyToMany(mappedBy = "focuses")
+    private Set<User> fans = new HashSet<>();
+
+    @OneToMany(mappedBy = "user")
+    private Set<Friendship> friendshipSet = new HashSet<>();
+
+    @OneToMany(mappedBy = "user")
+    private Set<Membership> membershipSet = new HashSet<>();
 
     public User() {
     }
+
 
     public User(String phone) {
         this.phone = phone;
@@ -76,20 +85,12 @@ public class User {
         this.enabled = enabled;
     }
 
-    public Set<User> getFollowing() {
-        return following;
+    public Set<User> getFocuses() {
+        return focuses;
     }
 
-    public void setFollowing(Set<User> following) {
-        this.following = following;
-    }
-
-    public Set<User> getFollowed() {
-        return followed;
-    }
-
-    public void setFollowed(Set<User> followed) {
-        this.followed = followed;
+    public void setFocuses(Set<User> focuses) {
+        this.focuses = focuses;
     }
 
     public RegistrationInfo getRegInfo() {
@@ -106,6 +107,30 @@ public class User {
 
     public void setProfile(Profile profile) {
         this.profile = profile;
+    }
+
+    public Set<User> getFans() {
+        return fans;
+    }
+
+    public void setFans(Set<User> fans) {
+        this.fans = fans;
+    }
+
+    public Set<Friendship> getFriendshipSet() {
+        return friendshipSet;
+    }
+
+    public void setFriendshipSet(Set<Friendship> friendshipSet) {
+        this.friendshipSet = friendshipSet;
+    }
+
+    public Set<Membership> getMembershipSet() {
+        return membershipSet;
+    }
+
+    public void setMembershipSet(Set<Membership> membershipSet) {
+        this.membershipSet = membershipSet;
     }
 
     //</editor-fold>

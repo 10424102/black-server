@@ -19,11 +19,10 @@ import java.util.List;
 
 @Configuration
 public class MvcConfig extends WebMvcConfigurerAdapter {
-    @Autowired
-    TokenAuthenticationInterceptor tokenAuthenticationInterceptor;
 
-    @Autowired
-    DebugRequestInterceptor debugRequestInterceptor;
+    @Autowired TokenAuthenticationInterceptor tokenAuthenticationInterceptor;
+
+    @Autowired DebugRequestInterceptor debugRequestInterceptor;
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
@@ -60,5 +59,4 @@ public class MvcConfig extends WebMvcConfigurerAdapter {
         BlackServerDataJacksonModule blackServerDataJacksonModule = new BlackServerDataJacksonModule();
         return blackServerDataJacksonModule;
     }
-
 }

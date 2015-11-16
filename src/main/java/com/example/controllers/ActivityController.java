@@ -28,23 +28,17 @@ public class ActivityController {
     public final static String OWNER = "owner";
     public final static String MEMBER = "member";
 
-    @Autowired
-    UserService userService;
+    @Autowired UserService userService;
 
-    @Autowired
-    UserRepo userRepo;
+    @Autowired UserRepo userRepo;
 
-    @Autowired
-    GameRepo gameRepo;
+    @Autowired GameRepo gameRepo;
 
-    @Autowired
-    GroupRepo groupRepo;
+    @Autowired GroupRepo groupRepo;
 
-    @Autowired
-    ActivityRepo activityRepo;
+    @Autowired ActivityRepo activityRepo;
 
-    @Autowired
-    ImageService imageService;
+    @Autowired ImageService imageService;
 
     /**
      * 获取全部活动
@@ -136,9 +130,9 @@ public class ActivityController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         activity.setGame(targetGame);
-        Group group = activity.getGroup();
-        Group targetGroup = groupRepo.findOne(group.getId());
-        if(targetGroup == null){
+        UserGroup group = activity.getGroup();
+        UserGroup targetGroup = groupRepo.findOne(group.getId());
+        if (targetGroup == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         activity.setGroup(targetGroup);

@@ -14,7 +14,6 @@ import java.util.Optional;
 import java.util.Properties;
 
 public class DevHelper {
-
     private static final Logger logger = LoggerFactory.getLogger(DevHelper.class);
 
     public static void initDb(String[] args) {
@@ -49,10 +48,10 @@ public class DevHelper {
             if (passwordEnv != null) {
                 password = passwordEnv;
             }
-            if(urlEnv != null){
+            if (urlEnv != null) {
                 url = urlEnv;
             }
-            if(driverEnv != null){
+            if (driverEnv != null) {
                 driver = driverEnv;
             }
 
@@ -85,6 +84,9 @@ public class DevHelper {
 
             // run init.sql
             ScriptRunner runner = new ScriptRunner(conn, false, true);
+            //runner.setLogWriter(new LogPrintWriter(logger));
+            runner.setLogWriter(null); // 不现实建表语句
+            runner.setErrorLogWriter(new ErrorLogPrintWriter(logger));
             runner.runScript(new BufferedReader(new InputStreamReader(
                     DevHelper.class.getResourceAsStream(script)
             )));
@@ -97,12 +99,12 @@ public class DevHelper {
             String sql = "INSERT INTO T_IMAGE(data) VALUES (LOAD_FILE('%s'))";
             String wnmAvatar = DevHelper.class.getResource("/dev/wnm_avatar.png").getPath();
             String wnmBg = DevHelper.class.getResource("/dev/wnm_bg.png").getPath();
-            if(isWindows){
+            if (isWindows) {
                 wnmAvatar = wnmAvatar.substring(1);
             }
             stat.execute(String.format(sql, wnmAvatar));
 
-            if(isWindows){
+            if (isWindows) {
                 wnmBg = wnmBg.substring(1);
             }
             stat.execute(String.format(sql, wnmBg));
@@ -111,63 +113,63 @@ public class DevHelper {
             String sql3 = "UPDATE T_USER SET background_image_id=2 WHERE id=1";
             stat.execute(sql3);
 
+            System.out.println("=~> 已经插入王尼玛的头像和背景");
+
             String gameCS = DevHelper.class.getResource("/dev/game_cs.png").getPath();
-            if(isWindows){
+            if (isWindows) {
                 gameCS = gameCS.substring(1);
             }
             stat.execute(String.format(sql, gameCS));
             String gameDota2 = DevHelper.class.getResource("/dev/game_dota2.png").getPath();
-            if(isWindows){
+            if (isWindows) {
                 gameDota2 = gameDota2.substring(1);
             }
             stat.execute(String.format(sql, gameDota2));
             String gameHeartStone = DevHelper.class.getResource("/dev/game_hearthstone.png").getPath();
-            if(isWindows){
+            if (isWindows) {
                 gameHeartStone = gameHeartStone.substring(1);
             }
             stat.execute(String.format(sql, gameDota2));
             String gameLOL = DevHelper.class.getResource("/dev/game_lol.png").getPath();
-            if(isWindows){
+            if (isWindows) {
                 gameLOL = gameLOL.substring(1);
             }
             stat.execute(String.format(sql, gameLOL));
             String gameMineCraft = DevHelper.class.getResource("/dev/game_minecraft.png").getPath();
-            if(isWindows){
+            if (isWindows) {
                 gameMineCraft = gameMineCraft.substring(1);
             }
             stat.execute(String.format(sql, gameMineCraft));
             String gameStarCraft = DevHelper.class.getResource("/dev/game_starcraft.png").getPath();
-            if(isWindows){
+            if (isWindows) {
                 gameStarCraft = gameStarCraft.substring(1);
             }
             stat.execute(String.format(sql, gameStarCraft));
             String gameWarCraft = DevHelper.class.getResource("/dev/game_warcraft.png").getPath();
-            if(isWindows){
+            if (isWindows) {
                 gameWarCraft = gameWarCraft.substring(1);
             }
             stat.execute(String.format(sql, gameWarCraft));
 
             int imageid;
-            for(int id=1;id<8;id++){
-                imageid = id+2;
-                String sql4 = "UPDATE T_GAME SET logo_id="+imageid+" WHERE id="+id;
+            for (int id = 1; id < 8; id++) {
+                imageid = id + 2;
+                String sql4 = "UPDATE T_GAME SET logo_id=" + imageid + " WHERE id=" + id;
                 stat.execute(sql4);
             }
 
-            for(int id=1;id<11;id++){
-                String sql4 = "UPDATE T_ACTIVITY SET cover_image_id=2, game_id="+(id%6+1)+" WHERE id="+id;
+            for (int id = 1; id < 11; id++) {
+                String sql4 = "UPDATE T_ACTIVITY SET cover_image_id=2, game_id=" + (id % 6 + 1) + " WHERE id=" + id;
                 stat.execute(sql4);
             }
 
             stat.close();
             conn.close();
 
-            System.out.println("已经插入王尼玛的头像和背景");
-
-            System.out.println("=== 测试数据库初始化完毕 ===\n");
+            System.out.println("=~> 测试数据库初始化完毕 \n");
 
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.debug("数据库初始化出错，服务器被迫终止", e);
             System.exit(0);
         }
     }

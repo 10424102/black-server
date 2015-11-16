@@ -37,8 +37,9 @@ public class ImageController {
     public ResponseEntity getImage(@RequestParam String q) {
         final HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.IMAGE_PNG);
-        if (imageService.canAccessImage(q)) {
-            Image image = imageRepo.findOneByAccessToken(q);
+        Long id = imageService.getImageIdFromAccessToken(q);
+        if (id != null) {
+            Image image = imageRepo.findOne(id);
             if (image == null) {
                 return new ResponseEntity<>(null, headers, NOT_FOUND);
             } else {

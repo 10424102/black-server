@@ -3,8 +3,7 @@ package com.example.controllers;
 import com.example.config.jsonviews.GroupView;
 import com.example.daos.GroupRepo;
 import com.example.daos.UserRepo;
-import com.example.models.Group;
-import com.example.models.User;
+import com.example.models.UserGroup;
 import com.example.services.UserService;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,12 +27,8 @@ public class GroupController {
 
     @RequestMapping(value = "/api/groups/{id}", method = RequestMethod.GET)
     @JsonView(GroupView.GroupSummary.class)
-    public ResponseEntity<?> getGroupDetails(@PathVariable("id") Integer id) {
-        User currentUser = userService.getCurrentUser();
-        if (currentUser == null) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        }
-        Group group = groupRepo.findOne(id);
+    public ResponseEntity<?> getGroupDetails(@PathVariable("id") Long id) {
+        UserGroup group = groupRepo.findOne(id);
         if (group == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

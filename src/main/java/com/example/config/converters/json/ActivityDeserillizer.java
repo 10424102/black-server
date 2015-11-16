@@ -2,7 +2,7 @@ package com.example.config.converters.json;
 
 import com.example.models.Activity;
 import com.example.models.Game;
-import com.example.models.Group;
+import com.example.models.UserGroup;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
@@ -34,7 +34,7 @@ public class ActivityDeserillizer extends JsonDeserializer<Activity> {
         String type = root.get("type").asText();
         String status = root.get("status").asText();
         String gameString = root.get("game").asText();
-        Integer groupInt = root.get("group").asInt();
+        Long groupId = root.get("group").asLong();
         Date startTimeDate = null;
         Date endTimeDate = null;
         Date registrationDeadlineDate = null;
@@ -43,7 +43,7 @@ public class ActivityDeserillizer extends JsonDeserializer<Activity> {
             startTimeDate = format.parse(startTime);
             endTimeDate = format.parse(endTime);
             registrationDeadlineDate = format.parse(registrationDeadline);
-            logger.debug("startTime "+startTimeDate);
+            logger.debug("startTime " + startTimeDate);
         } catch (ParseException e) {
             logger.warn("parse from [Date] error");
         }
@@ -75,8 +75,8 @@ public class ActivityDeserillizer extends JsonDeserializer<Activity> {
         Game game = new Game();
         game.setName(gameString);
 
-        Group group = new Group();
-        group.setId(groupInt);
+        UserGroup group = new UserGroup();
+        group.setId(groupId);
 
         activity.setGame(game);
         activity.setGroup(group);

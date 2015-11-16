@@ -1,12 +1,27 @@
 package com.example.models;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
+/**
+ * 关于用户组有几个 id 是虚拟用户组，这种组内是没有具体用户的
+ * 0 - 表示是用户的朋友圈形成的用户组
+ * 1 - 表示是用户的关注对象形成的用户组
+ * 2 - 表示使用户的粉丝形成的用户组
+ * 正常的用户组从 GID_BASE 开始编号
+ */
 @Entity
-public class Group {
+@Table(name = "T_GROUP")
+public class UserGroup {
+    public static final int GID_FRIENDS = 0;
+    public static final int GID_FOLLOWINGS = 1;
+    public static final int GID_FANS = 2;
+    public static final int GID_BASE = 100;
+
     @Id
     @GeneratedValue
-    private Integer id;
+    private Long id;
 
     private String name;
 
@@ -23,13 +38,16 @@ public class Group {
     @Transient
     private String logoAccessToken;
 
+    @OneToMany(mappedBy = "group")
+    private Set<Membership> members = new HashSet<>();
+
     //<editor-fold desc="=== Getters & Setters ===">
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -65,8 +83,8 @@ public class Group {
         this.page = page;
     }
 
-    public Integer getPageId(){
-        if(page != null){
+    public Integer getPageId() {
+        if (page != null) {
             return page.getId();
         }
         return null;
@@ -79,5 +97,14 @@ public class Group {
     public void setLogoAccessToken(String logoAccessToken) {
         this.logoAccessToken = logoAccessToken;
     }
-//</editor-fold>
+
+    public Set<Membership> getMembers() {
+        return members;
+    }
+
+    public void setMembers(Set<Membership> members) {
+        this.members = members;
+    }
+
+    //</editor-fold>
 }

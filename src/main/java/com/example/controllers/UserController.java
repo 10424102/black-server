@@ -33,26 +33,19 @@ import static org.springframework.web.bind.annotation.RequestMethod.*;
 public class UserController {
     static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
-    @Autowired
-    UserRepo userRepo;
+    @Autowired UserRepo userRepo;
 
-    @Autowired
-    CollegeRepo collegeRepo;
+    @Autowired CollegeRepo collegeRepo;
 
-    @Autowired
-    AcademyRepo academyRepo;
+    @Autowired AcademyRepo academyRepo;
 
-    @Autowired
-    UserService userService;
+    @Autowired UserService userService;
 
-    @Autowired
-    TokenService tokenService;
+    @Autowired TokenService tokenService;
 
-    @Autowired
-    ImageService imageService;
+    @Autowired ImageService imageService;
 
-    @Autowired
-    VcodeService vcodeService;
+    @Autowired VcodeService vcodeService;
 
     /////////////////////////////////////////////////////////////////
     //                                                             //
@@ -252,7 +245,7 @@ public class UserController {
             if (currentUser == null) {
                 return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
             }
-            Set<User> following = currentUser.getFollowing();
+            Set<User> following = currentUser.getFocuses();
             for (Iterator<User> iterator = following.iterator(); iterator.hasNext(); ) {
                 User checkUser = iterator.next();
                 if (checkUser.getId().equals(id)) {
@@ -276,7 +269,7 @@ public class UserController {
         if (currentUser == null) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
-        Set<User> following = currentUser.getFollowing();
+        Set<User> following = currentUser.getFocuses();
         if (following.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -307,7 +300,7 @@ public class UserController {
         }
         User followedUser = userRepo.findOne(id);
         if (followedUser != null) {
-            Set<User> following = user.getFollowing();
+            Set<User> following = user.getFocuses();
             boolean hasFollowed = false;
             for (Iterator<User> iterator = following.iterator(); iterator.hasNext(); ) {
                 User checkUser = iterator.next();
@@ -342,7 +335,7 @@ public class UserController {
         }
         User followedUser = userRepo.findOne(id);
         if (followedUser != null) {
-            Set<User> following = user.getFollowing();
+            Set<User> following = user.getFocuses();
             for (Iterator<User> iterator = following.iterator(); iterator.hasNext(); ) {
                 User checkUser = iterator.next();
                 if (checkUser.getId().equals(id)) {
@@ -363,20 +356,14 @@ public class UserController {
      */
     @RequestMapping(value = "/api/followed", method = GET)
     @JsonView(UserView.UserSummary.class)
-    public ResponseEntity<?> getFollowedList() {
+    public ResponseEntity getFollowedList() {
         User currentUser = userService.getCurrentUser();
-        if (currentUser == null) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        }
-        Set<User> followed = currentUser.getFollowed();
-        if (followed.isEmpty()) {
+        Set<User> fans = currentUser.getFans();
+        if (fans.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        for (Iterator<User> iterator = followed.iterator(); iterator.hasNext(); ) {
-            User checkUser = iterator.next();
-            updateAccesToken(checkUser);
-        }
-        return new ResponseEntity<>(followed, HttpStatus.BAD_REQUEST);
+        fans.forEach(this::updateAccesToken);
+        return new ResponseEntity<>(fans, HttpStatus.OK);
     }
 
     /**

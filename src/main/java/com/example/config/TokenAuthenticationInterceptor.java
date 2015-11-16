@@ -1,6 +1,6 @@
 package com.example.config;
 
-import com.example.services.IllegalTokenException;
+import com.example.exceptions.IllegalTokenException;
 import com.example.services.TokenService;
 import com.example.services.UserService;
 import org.slf4j.Logger;
@@ -17,11 +17,9 @@ import javax.servlet.http.HttpServletResponse;
 public class TokenAuthenticationInterceptor implements HandlerInterceptor {
     static final Logger log = LoggerFactory.getLogger(TokenAuthenticationInterceptor.class);
 
-    @Autowired
-    TokenService tokenService;
+    @Autowired TokenService tokenService;
 
-    @Autowired
-    UserService userService;
+    @Autowired UserService userService;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
@@ -33,6 +31,7 @@ public class TokenAuthenticationInterceptor implements HandlerInterceptor {
         } else {
             log.debug("拦截到 X-Token 为 " + token + " 的请求：" + request.getRequestURI());
             try {
+
                 userService.addUser(tokenService.getUserId(token));
             }catch (IllegalTokenException e){
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);

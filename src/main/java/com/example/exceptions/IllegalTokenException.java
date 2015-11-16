@@ -1,4 +1,4 @@
-package com.example.services;
+package com.example.exceptions;
 
 public class IllegalTokenException extends Exception {
 }
