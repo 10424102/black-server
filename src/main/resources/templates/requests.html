@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Bootstrap -->
+    <link href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <title>Black Server</title>
+</head>
+<body>
+<div class="container">
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Host</th>
+            <th>Method</th>
+            <th>Type</th>
+            <th>Content Length</th>
+        </tr>
+        </thead>
+        <tbody>
+        <th:block th:each="request: ${requests}">
+            <tr style="background-color: #222; color: #eee">
+                <td th:text="${request.host}" style="border-left: 5px solid #222;">192.168.0.1</td>
+                <td th:text="${request.method}">GET</td>
+                <td th:text="${request.type}">image/png</td>
+                <td th:text="${request.contentLength}">1000</td>
+            </tr>
+            <tr style="border-left: 5px solid green">
+                <td th:text="${request.url}" colspan="4">/api/blabla</td>
+            </tr>
+            <tr>
+                <td colspan="4" style="border-left: 5px solid gray">
+                    <table>
+                        <tr th:each="header: ${request.headers}">
+                            <td th:text="${header.key}" style="width: 200px;font-weight: bold;"></td>
+                            <td>
+                                <table>
+                                    <tr th:each="value: ${header.value}">
+                                        <td th:text="${value}"></td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr style="border-left: 5px solid orange">
+                <th:block th:unless="${request.content.isEmpty()}">
+                    <td th:text="${request.content}" colspan="4">
+                        Contents here
+                    </td>
+                </th:block>
+                <th:block th:if="${request.content.isEmpty()}">
+                    <td colspan="4" style="color: #888888">
+                        No Content
+                    </td>
+                </th:block>
+
+            </tr>
+        </th:block>
+        </tbody>
+    </table>
+</div>
+<!-- /container -->
+
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+</body>
+</html>

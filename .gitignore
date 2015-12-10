@@ -1,0 +1,15 @@
+/target/
+/blackserver/
+
+# MacOSX System Files 
+.DS_Store
+
+# Eclipse Project Settings
+.classpath
+.settings/
+.project
+
+# IntelliJ IDEA Project Settings
+*.iml
+.idea/
+
