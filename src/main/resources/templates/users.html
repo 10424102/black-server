@@ -1,0 +1,51 @@
+<div class="row">
+    <div class="col-sm-3 col-md-2 sidebar">
+        <ul class="nav nav-sidebar">
+            <li class="active"><a href="#/user"> 所有用户 <span class="sr-only">(current)</span></a></li>
+            <li><a href="#">所有请求</a></li>
+        </ul>
+    </div>
+    <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+        <h1 class="page-header">所有用户</h1>
+
+        <div class="row placeholders">
+            <div class="col-xs-6 col-sm-4 placeholder">
+                <h1>{{users.length}}</h1>
+                <span class="text-muted">用户总数</span>
+            </div>
+            <div class="col-xs-6 col-sm-4 placeholder">
+                <h1>4</h1>
+                <span class="text-muted">今日新增用户</span>
+            </div>
+            <div class="col-xs-6 col-sm-4 placeholder">
+                <h1>0</h1>
+                <span class="text-muted">今日注销用户</span>
+            </div>
+        </div>
+
+        <h2 class="sub-header">用户列表</h2>
+
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>头像</th>
+                    <th>手机号</th>
+                    <th>用户名</th>
+                    <th>Token</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="user in users" >
+                    <td>{{$index+1}}</td>
+                    <td><img ng-src="data:image/png;base64,{{user.avatarData}}" class="img-circle img-avatar"></td>
+                    <td>{{user.phone}}</td>
+                    <td>{{user.username}}</td>
+                    <td>{{user.signature}}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
