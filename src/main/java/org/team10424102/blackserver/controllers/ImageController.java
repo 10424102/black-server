@@ -7,6 +7,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.Base64Utils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
@@ -46,7 +47,8 @@ public class ImageController {
                 return new ResponseEntity<>(null, headers, NOT_FOUND);
             } else {
                 // image data will never be null
-                return new ResponseEntity<>(image.getData(), headers, OK);
+                //return new ResponseEntity<>(image.getData(), headers, OK);
+                return new ResponseEntity<>(Base64Utils.encode(image.getData()), headers, OK);
             }
         }
         return new ResponseEntity<>(null, headers, UNAUTHORIZED);
