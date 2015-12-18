@@ -17,7 +17,7 @@ public class TokenServiceEhcacheImpl implements TokenService {
     private static final Cache tokenCache = CacheManager.getInstance().getCache("tokenCache");
 
     public String generateToken(Object obj) {
-        String token = Base64.getEncoder().encodeToString(RandomUtils.nextBytes(16));
+        String token = Base64.getUrlEncoder().encodeToString(RandomUtils.nextBytes(16));
         tokenCache.put(new Element(token, obj));
         // TODO 同一个用户可能会产生多个 token 放在缓存当中, 这是一种资源浪费
         // 理想的做法是先查询该 user 是否已经在缓存当中, 如果在则作废以前的 token, 生成一个新的 token
