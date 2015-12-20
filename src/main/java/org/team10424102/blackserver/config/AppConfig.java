@@ -74,6 +74,8 @@ public class AppConfig {
             registry.addViewController("/").setViewName("index");
             registry.addViewController("/partials/users").setViewName("users");
             registry.addViewController("/partials/activities").setViewName("activities");
+            registry.addViewController("/partials/login").setViewName("login");
+            registry.addViewController("/partials/chatroom").setViewName("chatroom");
         }
 
         @Override
