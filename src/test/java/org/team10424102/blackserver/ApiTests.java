@@ -19,7 +19,7 @@ import static org.team10424102.blackserver.App.*;
 public class ApiTests extends BaseTests {
 
     //@Test
-    public void getToken_withInvalidPhone() throws Exception {
+    public void user_getToken_withInvalidPhone() throws Exception {
         //TODO 使用真正的手机短信验证框架后, 修改该测试
         mockMvc.perform(get(API_USER + "/token")
                 .param("phone", "11111111111")
@@ -29,14 +29,14 @@ public class ApiTests extends BaseTests {
 
     // TODO expected = VcodeVerificationException.class
     @Test(expected = Exception.class)
-    public void getToken_withInvalidVcode() throws Exception {
+    public void user_getToken_withInvalidVcode() throws Exception {
         mockMvc.perform(get(API_USER + "/token")
                 .param("phone", "15610589653")
                 .param("vcode", "xxxx"));
     }
 
     @Test
-    public void getToken_withValidVcode() throws Exception {
+    public void user_getToken_withValidVcode() throws Exception {
         //TODO 使用真正的手机短信验证框架后, 修改该测试
         mockMvc.perform(get(API_USER + "/token")
                 .param("phone", "15610589653")
@@ -46,19 +46,19 @@ public class ApiTests extends BaseTests {
     }
 
     @Test
-    public void getToken_missingParameter() throws Exception {
+    public void user_getToken_missingParameter() throws Exception {
         mockMvc.perform(get(API_USER + "/token")
                 .param("phone", "15610589653"))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
-    public void unregisterAccount() throws Exception {
+    public void user_unregisterAccount() throws Exception {
         // TODO test: unregister account
     }
 
     @Test
-    public void getMyProfile() throws Exception {
+    public void user_getMyProfile() throws Exception {
         MvcResult result = mockMvc.perform(get(API_USER).header(AUTH_HEADER, getToken()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", equalTo(2)))
@@ -85,7 +85,7 @@ public class ApiTests extends BaseTests {
     }
 
     //@Test
-    public void updateUsername() throws Exception {
+    public void user_updateUsername() throws Exception {
         // FIXME 500 without any error hints
         mockMvc.perform(patch(API_USER + "/username")
                 .header(AUTH_HEADER, getToken()).param("val", "testa"))
@@ -106,82 +106,82 @@ public class ApiTests extends BaseTests {
     }
 
     @Test
-    public void updateNickname() throws Exception {
+    public void user_updateNickname() throws Exception {
         // TODO test: update nickname
     }
 
     @Test
-    public void updateEmail() throws Exception {
+    public void user_updateEmail() throws Exception {
         // TODO test: update email
     }
 
     @Test
-    public void updateSignature() throws Exception {
+    public void user_updateSignature() throws Exception {
         // TODO test: update signature
     }
 
     @Test
-    public void updateGender() throws Exception {
+    public void user_updateGender() throws Exception {
         // TODO test: update gender
     }
 
     @Test
-    public void updateHighschool() throws Exception {
+    public void user_updateHighschool() throws Exception {
         // TODO test: udpate highschool
     }
 
     @Test
-    public void updateHometown() throws Exception {
+    public void user_updateHometown() throws Exception {
         // TODO test: update hometown
     }
 
     @Test
-    public void updateBirthday() throws Exception {
+    public void user_updateBirthday() throws Exception {
         // TODO test: udpate birthday
     }
 
     @Test
-    public void updateCollege() throws Exception {
+    public void user_updateCollege() throws Exception {
         // TODO test: update college (with academy and grade)
     }
 
     @Test
-    public void updateAvatar() throws Exception {
+    public void user_updateAvatar() throws Exception {
         // TODO test: udpate avatar
     }
 
     @Test
-    public void updateBackground() throws Exception {
+    public void user_updateBackground() throws Exception {
         // TODO test: update background
     }
 
     @Test
-    public void getAllFriends() throws Exception {
+    public void user_getAllFriends() throws Exception {
         // TODO test: get all friends
     }
 
     @Test
-    public void getAllFans() throws Exception {
+    public void user_getAllFans() throws Exception {
         // TODO test: get all friends
     }
 
     @Test
-    public void getAllFocuses() throws Exception {
+    public void user_getAllFocuses() throws Exception {
         // TODO test: get all focuses
     }
 
     @Test
-    public void getAllLikes() throws Exception {
+    public void user_getAllLikes() throws Exception {
         // TODO test: get all likes (post)
     }
 
     @Test
-    public void getAllJoinedGroups() throws Exception {
+    public void user_getAllJoinedGroups() throws Exception {
         // TODO test: get all joined group
     }
 
     @Test
-    public void addFriend_replyYes() throws Exception {
+    public void user_addFriend_replyYes() throws Exception {
         mockMvc.perform(post(API_USER + "/friends/" + USER_B_ID)
                 .param("attachment", "我是隔壁老王啊")
                 .header(AUTH_HEADER, getTokenA()))
@@ -228,7 +228,7 @@ public class ApiTests extends BaseTests {
     }
 
     @Test
-    public void addFriend_replyNo() throws Exception {
+    public void user_addFriend_replyNo() throws Exception {
         mockMvc.perform(post(API_USER + "/friends/" + USER_B_ID)
                 .param("attachment", "我是隔壁老王啊")
                 .header(AUTH_HEADER, getTokenA()))
@@ -274,7 +274,7 @@ public class ApiTests extends BaseTests {
     }
 
     @Test
-    public void addFriend_replyDelete() throws Exception {
+    public void user_addFriend_replyDelete() throws Exception {
         mockMvc.perform(post(API_USER + "/friends/" + USER_B_ID)
                 .param("attachment", "我是隔壁老王啊")
                 .header(AUTH_HEADER, getTokenA()))
@@ -320,42 +320,42 @@ public class ApiTests extends BaseTests {
     }
 
     @Test
-    public void removeFriend() throws Exception {
+    public void user_removeFriend() throws Exception {
         // TODO test: remove a friend
     }
 
     @Test
-    public void focusSomeone() throws Exception {
+    public void user_focusSomeone() throws Exception {
         // TODO test: focus someone
     }
 
     @Test
-    public void unfocusSomeone() throws Exception {
+    public void user_unfocusSomeone() throws Exception {
         // TODO test: unfocus someone
     }
 
     @Test
-    public void joinActivity_replyYes() throws Exception {
+    public void user_joinActivity_replyYes() throws Exception {
         // TODO test: join a activity (reply yes)
     }
 
     @Test
-    public void joinActivity_replyNO() throws Exception {
+    public void user_joinActivity_replyNO() throws Exception {
         // TODO test: join a activity (reply no)
     }
 
     @Test
-    public void joinActivity_replyDelete() throws Exception {
+    public void user_joinActivity_replyDelete() throws Exception {
         // TODO test: join a activity (reply delete)
     }
 
     @Test
-    public void leaveActivity() throws Exception {
+    public void user_leaveActivity() throws Exception {
         // TODO test: leave a activity
     }
 
     @Test
-    public void getRecommendedActivities() throws Exception {
+    public void activity_getRecommendedActivities() throws Exception {
         String token = getToken();
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get(App.API_ACTIVITY).header("X-Token", token)
                 .param("category", "recommendations")
@@ -368,7 +368,7 @@ public class ApiTests extends BaseTests {
     }
 
     @Test
-    public void getSameSchoolActivities() throws Exception {
+    public void activity_getSameSchoolActivities() throws Exception {
         String token = getToken();
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get(App.API_ACTIVITY).header("X-Token", token)
                 .param("category", "school")
@@ -381,17 +381,17 @@ public class ApiTests extends BaseTests {
     }
 
     @Test
-    public void getFriendsActivities() throws Exception {
+    public void activity_getFriendsActivities() throws Exception {
         // TODO test: get friends' activities
     }
 
     @Test
-    public void getFocusesActivities() throws Exception {
+    public void activity_getFocusesActivities() throws Exception {
         // TODO test: get focuses' activities
     }
 
     @Test
-    public void getActivityDetails() throws Exception {
+    public void activity_getActivityDetails() throws Exception {
         String token = getToken();
         MvcResult result = mockMvc.perform(get(App.API_ACTIVITY + "/1").header("X-Token", token))
                 .andExpect(status().isOk())
@@ -400,7 +400,7 @@ public class ApiTests extends BaseTests {
     }
 
     @Test
-    public void getActivitiesComments() throws Exception {
+    public void activity_getActivitiesComments() throws Exception {
         MvcResult result = mockMvc.perform(get(API_ACTIVITY + "/2/comments")
                 .header(AUTH_HEADER, getToken())
                 .header("Accept-Language", "zh_CN"))
@@ -411,7 +411,7 @@ public class ApiTests extends BaseTests {
     }
 
     @Test
-    public void commentActivity() throws Exception {
+    public void activity_commentActivity() throws Exception {
         mockMvc.perform(post(API_ACTIVITY + "/2/comments")
                 .header(AUTH_HEADER, getToken())
                 .header("Accept-Language", "zh_CN")
@@ -420,7 +420,7 @@ public class ApiTests extends BaseTests {
     }
 
     @Test
-    public void deleteActivityComment() throws Exception {
+    public void activity_deleteActivityComment() throws Exception {
 //        String token = getToken();
 //        mockMvc.perform(delete(App.API_ACTIVITY + "/2/comment/delete/29")
 //            .header("X-Token", token)
@@ -429,7 +429,7 @@ public class ApiTests extends BaseTests {
     }
 
     @Test
-    public void getGame_zh_CN() throws Exception {
+    public void game_getGame_zh_CN() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get(App.API_GAME).header(AUTH_HEADER, getToken())
                 .param("key", "MINECRAFT").locale(Locale.SIMPLIFIED_CHINESE))
                 .andExpect(status().isOk())
@@ -439,7 +439,7 @@ public class ApiTests extends BaseTests {
     }
 
     @Test
-    public void getGame_en_US() throws Exception {
+    public void game_getGame_en_US() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get(App.API_GAME).header(AUTH_HEADER, getToken())
                 .param("key", "MINECRAFT").locale(Locale.ENGLISH))
                 .andExpect(status().isOk())
@@ -449,7 +449,7 @@ public class ApiTests extends BaseTests {
     }
 
     @Test
-    public void getSameSchoolPosts() throws Exception {
+    public void post_getSameSchoolPosts() throws Exception {
         String token = getToken();
 
         MvcResult result = mockMvc.perform(get(App.API_POST)
@@ -466,17 +466,17 @@ public class ApiTests extends BaseTests {
     }
 
     @Test
-    public void getFriendsPosts() throws Exception {
+    public void post_getFriendsPosts() throws Exception {
         // TODO test: get friends' posts
     }
 
     @Test
-    public void getFocusesPosts() throws Exception {
+    public void post_getFocusesPosts() throws Exception {
         // TODO test: get focuses's posts
     }
 
     @Test
-    public void deletePost() {
+    public void post_deletePost() {
         // TODO test: delete post
     }
 
@@ -484,7 +484,7 @@ public class ApiTests extends BaseTests {
      * 创建推文
      */
     @Test
-    public void postCrud() throws Exception {
+    public void post_postCrud() throws Exception {
         MvcResult result;
 
         result = mockMvc.perform(post(API_POST)
@@ -526,7 +526,7 @@ public class ApiTests extends BaseTests {
 
 
     @Test
-    public void getPostComments() throws Exception {
+    public void post_getPostComments() throws Exception {
         String token = getToken();
 
         MvcResult result = mockMvc.perform(get(App.API_POST + "/6/comments")
@@ -538,7 +538,7 @@ public class ApiTests extends BaseTests {
     }
 
     @Test
-    public void commentPost() throws Exception {
+    public void post_commentPost() throws Exception {
         String token = getToken();
         mockMvc.perform(post(App.API_POST + "/6/comments")
                 .header("X-Token", token)
@@ -548,7 +548,7 @@ public class ApiTests extends BaseTests {
     }
 
     @Test
-    public void deletePostComment() throws Exception {
+    public void post_deletePostComment() throws Exception {
 //        String token = getToken();
 //        mockMvc.perform(delete(App.API_POST + "/6/comment/delete/28")
 //            .header("X-Token", token)
@@ -557,7 +557,7 @@ public class ApiTests extends BaseTests {
     }
 
     @Test
-    public void likePost() throws Exception {
+    public void post_likePost() throws Exception {
         String token = getToken();
         mockMvc.perform(post(App.API_POST + "/28/likes")
                 .header("X-Token", token)
@@ -566,7 +566,7 @@ public class ApiTests extends BaseTests {
     }
 
     @Test
-    public void unlikePost() throws Exception {
+    public void post_unlikePost() throws Exception {
         String token = getToken();
         mockMvc.perform(delete(App.API_POST + "/6/likes")
                 .header("X-Token", token)
@@ -587,6 +587,11 @@ public class ApiTests extends BaseTests {
     @Test
     public void searchPosts() throws Exception {
         // TODO test: search for posts
+    }
+
+    @Test
+    public void image_getImage() throws Exception {
+        // TODO test: get image
     }
 
 }
