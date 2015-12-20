@@ -1,40 +1,30 @@
 package org.team10424102.blackserver;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.IntegrationTest;
-import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.boot.test.TestRestTemplate;
-import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.request.RequestPostProcessor;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
-import org.team10424102.blackserver.config.security.TokenAuthenticationFilter;
+import org.team10424102.blackserver.config.TokenAuthenticationFilter;
 
 import javax.servlet.Filter;
-import javax.transaction.Transactional;
 import java.util.TimeZone;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import static org.team10424102.blackserver.App.*;
+import static org.team10424102.blackserver.App.API_USER;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = App.class)
 @WebAppConfiguration
-@IntegrationTest("server.port:0") // random port
 @Transactional
 public class BaseTests {
     private static final Logger logger = LoggerFactory.getLogger(BaseTests.class);
@@ -50,10 +40,10 @@ public class BaseTests {
     public static final int USER_ID = 2;
     public static final int USER_A_ID = 3;
     public static final int USER_B_ID = 4;
-    public static final int USER_C_ID = 5;
+    public static final String USER_PHONE = "18921273088";
+    public static final String USER_A_PHONE = "18921273089";
+    public static final String USER_B_PHONE = "18921273090";
     protected final ObjectMapper mapper = new ObjectMapper();
-
-    protected RestTemplate rest = new TestRestTemplate();
 
     @Before
     public void setUp() {
@@ -67,21 +57,15 @@ public class BaseTests {
 
     protected void printFormatedJsonString(MvcResult result) throws Exception {
         String json = result.getResponse().getContentAsString();
-
-//        System.out.println("\n=========================================================================");
-//        System.out.println(new JSONObject(json).toString(4));
-//        System.out.println("=========================================================================\n");
-
         Object obj = mapper.readValue(json, Object.class);
         System.out.println("\n=========================================================================");
         System.out.println(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(obj));
         System.out.println("=========================================================================\n");
-        //logger.debug(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(obj));
     }
 
     protected String getToken() throws Exception {
         if (token != null) return token;
-        return token = getTokenInternal("18921273088");
+        return token = getTokenInternal(USER_PHONE);
     }
 
     private String getTokenInternal(String phone) throws Exception {
@@ -90,18 +74,16 @@ public class BaseTests {
                 .param("vcode", "1234"))
                 .andExpect(status().isOk()).andReturn();
         String tokenJson = result.getResponse().getContentAsString();
-        JSONObject obj = new JSONObject(tokenJson);
-        token = obj.getString("token");
-        return token;
+        return mapper.readTree(tokenJson).get("token").asText();
     }
 
     protected String getTokenA() throws Exception {
         if (tokenA != null) return tokenA;
-        return tokenA = getTokenInternal("18921273089");
+        return tokenA = getTokenInternal(USER_A_PHONE);
     }
 
     protected String getTokenB() throws Exception {
         if (tokenB != null) return tokenB;
-        return tokenB = getTokenInternal("18921273090");
+        return tokenB = getTokenInternal(USER_B_PHONE);
     }
 }

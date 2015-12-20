@@ -15,7 +15,6 @@ import java.io.IOException;
 
 @Component
 public class ImageDeserializer extends JsonDeserializer<Image> {
-    private static final Logger logger = LoggerFactory.getLogger(ImageDeserializer.class);
 
     @Autowired TokenService tokenService;
 

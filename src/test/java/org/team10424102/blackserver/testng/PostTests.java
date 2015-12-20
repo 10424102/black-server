@@ -1,22 +1,20 @@
 package org.team10424102.blackserver.testng;
 
-import org.json.JSONObject;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.boot.test.WebIntegrationTest;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 import org.team10424102.blackserver.App;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import javax.servlet.Filter;
-import javax.transaction.Transactional;
 import java.util.Locale;
 import java.util.Random;
 
@@ -25,12 +23,12 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringApplicationConfiguration(App.class)
-@WebIntegrationTest("server.port:0")
 @Transactional
 public class PostTests extends AbstractTestNGSpringContextTests {
     @Value("${local.server.port}")
     private int port;
+
+    private ObjectMapper mapper = new ObjectMapper();
 
 
     protected MockMvc mockMvc;
@@ -48,8 +46,7 @@ public class PostTests extends AbstractTestNGSpringContextTests {
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get(App.API_USER + "token").param("phone", "123456789").param("vcode", "1234"))
                 .andExpect(status().isOk()).andReturn();
         String tokenJson = result.getResponse().getContentAsString();
-        JSONObject obj = new JSONObject(tokenJson);
-        return obj.getString("token");
+        return mapper.readTree(tokenJson).get("token").asText();
     }
 
     //@Test(invocationCount = 500, threadPoolSize = 1000)

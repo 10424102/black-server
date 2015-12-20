@@ -1,9 +1,9 @@
-package org.team10424102.blackserver.config.security;
+package org.team10424102.blackserver.config;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.filter.OncePerRequestFilter;
-import org.team10424102.blackserver.controllers.UserController;
 import org.team10424102.blackserver.services.TokenService;
 
 import javax.servlet.FilterChain;
@@ -24,6 +24,7 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
     }
 
     @Override
+    @Transactional
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
         String token = request.getHeader(HTTP_HEADER);

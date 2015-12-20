@@ -2,7 +2,7 @@ package org.team10424102.blackserver.controllers;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.team10424102.blackserver.App;
 import org.team10424102.blackserver.config.json.Views;
-import org.team10424102.blackserver.config.security.CurrentUser;
-import org.team10424102.blackserver.config.security.SpringSecurityUserAdapter;
+import org.team10424102.blackserver.config.CurrentUser;
+import org.team10424102.blackserver.config.SpringSecurityUserAdapter;
 import org.team10424102.blackserver.models.*;
 import org.team10424102.blackserver.controllers.exceptions.RequestDataFormatException;
 import org.team10424102.blackserver.controllers.exceptions.VcodeVerificationException;
@@ -31,6 +31,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 @RestController
 @RequestMapping(value = App.API_USER)
+@Transactional
 public class UserController {
 
     @Autowired UserRepo userRepo;
@@ -61,7 +62,7 @@ public class UserController {
      *
      * @return
      * {
-     *     "token": "fjdsfijasdfjadskfa"
+     *     "token": token-string
      * }
      * <p>
      * 如果手机号码不存在这里就是创建用户
@@ -150,23 +151,28 @@ public class UserController {
      * 更新当前用户的个人信息
      */
     @RequestMapping(method = PUT)
-    public void updateCurrentUsersProfile(@Valid User user) {
-        userRepo.save(user);
+    @JsonView(Views.UserDetails.class)
+    public User updateCurrentUsersProfile(@Valid User user) {
+        return userRepo.save(user);
     }
 
     @RequestMapping(value = "/nickname", method = PATCH)
-    public void updateNickName(@RequestParam String val, @CurrentUser User user) {
+    @JsonView(Views.UserDetails.class)
+    public User updateNickName(@RequestParam String val, @CurrentUser User user) {
         user.setNickname(val);
-        userRepo.save(user);
+        return userRepo.save(user);
     }
 
     @RequestMapping(value = "/signature", method = PATCH)
-    public void updateUserName(@RequestParam String val, @CurrentUser User user) {
+    @JsonView(Views.UserDetails.class)
+    public User updateSignature(@RequestParam String val, @CurrentUser User user) {
         user.setSignature(val);
+        return userRepo.save(user);
     }
 
     @RequestMapping(value = "/birthday", method = PATCH)
-    public void updateBirthday(@RequestParam String val, @CurrentUser User user) {
+    @JsonView(Views.UserDetails.class)
+    public User updateBirthday(@RequestParam String val, @CurrentUser User user) {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         try {
             Date birthday = format.parse(val);
@@ -174,17 +180,23 @@ public class UserController {
         } catch (ParseException e) {
             throw new RequestDataFormatException("cannot parse " + val + " to yyyy-MM-dd");
         }
+        return userRepo.save(user);
     }
-//
-//    @RequestMapping(value = App.API_USER, method = PATCH)
-//    public void updateGender(@RequestParam String val, @CurrentUser User user) {
-//
-//    }
-//
-//    @RequestMapping(value = App.API_USER, method = PATCH)
-//    public void updateSignature(@RequestParam String val, @CurrentUser User user) {
-//
-//    }
+
+    @RequestMapping(value = "/gender", method = PATCH)
+    public User updateGender(@RequestParam String val, @CurrentUser User user) {
+        Gender gender = Gender.valueOf(val);
+        user.setGender(gender);
+        return userRepo.save(user);
+    }
+
+
+    @RequestMapping(value = "/username", method = PATCH)
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public User updateUsername(@RequestParam String val, @CurrentUser User user) {
+        user.setUsername(val);
+        return userRepo.save(user);
+    }
 //
 //    @RequestMapping(value = App.API_USER, method = PATCH)
 //    public void updateHighschool(@RequestParam String val, @CurrentUser User user) {

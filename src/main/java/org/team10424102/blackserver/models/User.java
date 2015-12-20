@@ -38,6 +38,7 @@ public class User {
      */
     @NotBlank
     @Pattern(regexp = "^[a-z0-9_-]{3,16}$")
+    @Column(unique = true)
     private String username;
 
     /**
@@ -482,6 +483,7 @@ public class User {
         return 0;
     }
 
+    @JsonIgnore
     public List<User> getFriends() {
         return getFriendshipSet().stream().map(e -> {
             User friend = e.getFriend();

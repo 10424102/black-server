@@ -12,10 +12,6 @@ public class LocalizationInterceptor extends HandlerInterceptorAdapter {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         LocaleContextHolder.setLocale(request.getLocale());
-        String lang = request.getHeader("Accept-Language");
-        if (lang != null) {
-            LocaleContextHolder.setLocale(StringUtils.parseLocaleString(lang));
-        }
         return true; // go on
     }
 }

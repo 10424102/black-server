@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.team10424102.blackserver.models.User;
-import org.team10424102.blackserver.config.security.CurrentUser;
+import org.team10424102.blackserver.config.CurrentUser;
 
 import static org.springframework.web.bind.annotation.RequestMethod.*;
 

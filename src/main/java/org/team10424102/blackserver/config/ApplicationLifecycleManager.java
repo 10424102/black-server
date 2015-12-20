@@ -2,14 +2,9 @@ package org.team10424102.blackserver.config;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
-import org.team10424102.blackserver.extensions.dota2.Dota2PostExtension;
-import org.team10424102.blackserver.extensions.image.ImagePostExtension;
-import org.team10424102.blackserver.extensions.poll.PollPostExtension;
 
 @Component
 public class ApplicationLifecycleManager{

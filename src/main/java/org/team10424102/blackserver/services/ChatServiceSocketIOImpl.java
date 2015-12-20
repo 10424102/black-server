@@ -9,7 +9,6 @@ import com.corundumstudio.socketio.listener.DataListener;
 import com.corundumstudio.socketio.listener.DisconnectListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.team10424102.blackserver.config.ApplicationProperties;
 import org.team10424102.blackserver.models.ChatMessage;
 
 import javax.annotation.PreDestroy;
@@ -23,10 +22,9 @@ public class ChatServiceSocketIOImpl implements ChatService, ConnectListener, Di
 
     private final SocketIOServer server;
 
-    @Autowired
-    public ChatServiceSocketIOImpl(ApplicationProperties ap){
-        String hostname = ap.getChat().getHostname();
-        int port = ap.getChat().getPort();
+    public ChatServiceSocketIOImpl(){
+        String hostname = "localhost";
+        int port = 8081;
         Configuration cfg = new Configuration();
         cfg.setHostname(hostname);
         cfg.setPort(port);

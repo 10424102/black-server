@@ -1,4 +1,4 @@
-package org.team10424102.blackserver.dev;
+package org.team10424102.blackserver.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

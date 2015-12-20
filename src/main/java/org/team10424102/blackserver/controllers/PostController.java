@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.team10424102.blackserver.App;
 import org.team10424102.blackserver.config.json.Views;
-import org.team10424102.blackserver.config.security.CurrentUser;
+import org.team10424102.blackserver.config.CurrentUser;
 import org.team10424102.blackserver.models.LikesRepo;
 import org.team10424102.blackserver.models.PostRepo;
 import org.team10424102.blackserver.extensions.PostExtension;

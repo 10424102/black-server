@@ -3,13 +3,13 @@ package org.team10424102.blackserver.services;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
-import org.apache.commons.lang3.RandomUtils;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.team10424102.blackserver.config.security.SpringSecurityUserAdapter;
-import org.team10424102.blackserver.models.User;
+import org.team10424102.blackserver.config.SpringSecurityUserAdapter;
 
+import java.nio.ByteBuffer;
 import java.util.Base64;
+import java.util.UUID;
 
 @Service
 public class TokenServiceEhcacheImpl implements TokenService {
@@ -17,7 +17,13 @@ public class TokenServiceEhcacheImpl implements TokenService {
     private static final Cache tokenCache = CacheManager.getInstance().getCache("tokenCache");
 
     public String generateToken(Object obj) {
-        String token = Base64.getEncoder().encodeToString(RandomUtils.nextBytes(16));
+        // http://stackoverflow.com/questions/2513573/how-good-is-javas-uuid-randomuuid
+        UUID uuid = UUID.randomUUID();
+        ByteBuffer bb = ByteBuffer.allocate(16);
+        bb.putLong(uuid.getMostSignificantBits());
+        bb.putLong(uuid.getLeastSignificantBits());
+        // url safe base64
+        String token = Base64.getUrlEncoder().encodeToString(bb.array());
         tokenCache.put(new Element(token, obj));
         // TODO 同一个用户可能会产生多个 token 放在缓存当中, 这是一种资源浪费
         // 理想的做法是先查询该 user 是否已经在缓存当中, 如果在则作废以前的 token, 生成一个新的 token

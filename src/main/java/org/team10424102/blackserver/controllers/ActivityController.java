@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.team10424102.blackserver.App;
 import org.team10424102.blackserver.config.json.Views;
-import org.team10424102.blackserver.config.security.CurrentUser;
+import org.team10424102.blackserver.config.CurrentUser;
 import org.team10424102.blackserver.models.ActivityRecommendationRepo;
 import org.team10424102.blackserver.models.ActivityRepo;
 import org.team10424102.blackserver.models.*;

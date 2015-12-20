@@ -1,4 +1,4 @@
-package org.team10424102.blackserver.config.security;
+package org.team10424102.blackserver.config;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 

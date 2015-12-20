@@ -1,11 +1,7 @@
 package org.team10424102.blackserver;
 
-import org.apache.http.auth.AUTH;
-import org.json.JSONArray;
-import org.json.JSONObject;
+import com.fasterxml.jackson.databind.JsonNode;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -13,11 +9,11 @@ import org.team10424102.blackserver.models.Notification;
 
 import java.util.Locale;
 
-import static com.jcabi.matchers.RegexMatchers.matchesPattern;
 import static org.hamcrest.CoreMatchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.team10424102.blackserver.App.*;
 
 public class ApiTests extends BaseTests {
@@ -31,12 +27,12 @@ public class ApiTests extends BaseTests {
                 .andExpect(status().isBadRequest());
     }
 
-    @Test
+    // TODO expected = VcodeVerificationException.class
+    @Test(expected = Exception.class)
     public void getToken_withInvalidVcode() throws Exception {
         mockMvc.perform(get(API_USER + "/token")
                 .param("phone", "15610589653")
-                .param("vcode", "xxxx"))
-                .andExpect(status().isBadRequest());
+                .param("vcode", "xxxx"));
     }
 
     @Test
@@ -89,8 +85,24 @@ public class ApiTests extends BaseTests {
     }
 
     @Test
+    @Rollback(false)
     public void updateUsername() throws Exception {
-        // TODO test: update username
+        mockMvc.perform(patch(API_USER + "/username")
+                .header(AUTH_HEADER, getToken()).param("val", "testa"))
+                .andDo(print())
+                .andExpect(status().isOk());
+
+        MvcResult result = mockMvc.perform(get(API_USER).header(AUTH_HEADER, getToken()))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        printFormatedJsonString(result);
+
+//        result = mockMvc.perform(get(API_USER).header(AUTH_HEADER, getTokenA()))
+//                .andExpect(status().isOk())
+//                .andReturn();
+//
+//        printFormatedJsonString(result);
     }
 
     @Test
@@ -190,9 +202,9 @@ public class ApiTests extends BaseTests {
 
         System.out.println("----------------");
 
-        JSONArray notificationArray = new JSONArray(result2.getResponse().getContentAsString());
-        JSONObject notification = (JSONObject) notificationArray.get(0);
-        long id = notification.getInt("id");
+        JsonNode notificationArray = mapper.readTree(result2.getResponse().getContentAsString());
+        JsonNode notification = notificationArray.get(0);
+        long id = notification.get("id").asLong();
 
         mockMvc.perform(put(API_NOTIFICATION + "/" + id)
                 .param("reply", Notification.REPLY_YES + "")
@@ -237,9 +249,9 @@ public class ApiTests extends BaseTests {
 
         System.out.println("----------------");
 
-        JSONArray notificationArray = new JSONArray(result2.getResponse().getContentAsString());
-        JSONObject notification = (JSONObject) notificationArray.get(0);
-        long id = notification.getInt("id");
+        JsonNode notificationArray = mapper.readTree(result2.getResponse().getContentAsString());
+        JsonNode notification = notificationArray.get(0);
+        long id = notification.get("id").asLong();
 
         mockMvc.perform(put(API_NOTIFICATION + "/" + id)
                 .param("reply", Notification.REPLY_NO + "")
@@ -283,9 +295,9 @@ public class ApiTests extends BaseTests {
 
         System.out.println("----------------");
 
-        JSONArray notificationArray = new JSONArray(result2.getResponse().getContentAsString());
-        JSONObject notification = (JSONObject) notificationArray.get(0);
-        long id = notification.getInt("id");
+        JsonNode notificationArray = mapper.readTree(result2.getResponse().getContentAsString());
+        JsonNode notification = notificationArray.get(0);
+        long id = notification.get("id").asLong();
 
         mockMvc.perform(put(API_NOTIFICATION + "/" + id)
                 .param("reply", Notification.REPLY_DELETE + "")
@@ -401,10 +413,10 @@ public class ApiTests extends BaseTests {
     @Test
     public void commentActivity() throws Exception {
         mockMvc.perform(post(API_ACTIVITY + "/2/comments")
-            .header(AUTH_HEADER, getToken())
-            .header("Accept-Language", "zh_CN")
-            .param("content", "梅杰菜狗"))
-            .andExpect(status().isOk());
+                .header(AUTH_HEADER, getToken())
+                .header("Accept-Language", "zh_CN")
+                .param("content", "梅杰菜狗"))
+                .andExpect(status().isOk());
     }
 
     @Test
@@ -509,7 +521,7 @@ public class ApiTests extends BaseTests {
     }
 
     private long getId(MvcResult result) throws Exception {
-        return new JSONObject(result.getResponse().getContentAsString()).getLong("id");
+        return mapper.readTree(result.getResponse().getContentAsString()).get("id").asLong();
     }
 
 
@@ -518,10 +530,10 @@ public class ApiTests extends BaseTests {
         String token = getToken();
 
         MvcResult result = mockMvc.perform(get(App.API_POST + "/6/comments")
-            .header("X-Token", token)
-            .header("Accept-Language", "zh_CN"))
-            .andExpect(status().isOk())
-            .andReturn();
+                .header("X-Token", token)
+                .header("Accept-Language", "zh_CN"))
+                .andExpect(status().isOk())
+                .andReturn();
         printFormatedJsonString(result);
     }
 
@@ -548,18 +560,18 @@ public class ApiTests extends BaseTests {
     public void likePost() throws Exception {
         String token = getToken();
         mockMvc.perform(post(App.API_POST + "/28/likes")
-            .header("X-Token", token)
-            .header("Accept-Language", "zh_CN"))
-            .andExpect(status().isOk());
+                .header("X-Token", token)
+                .header("Accept-Language", "zh_CN"))
+                .andExpect(status().isOk());
     }
 
     @Test
     public void unlikePost() throws Exception {
         String token = getToken();
         mockMvc.perform(delete(App.API_POST + "/6/likes")
-            .header("X-Token", token)
-            .header("Accept-Language", "zh_CN"))
-            .andExpect(status().isOk());
+                .header("X-Token", token)
+                .header("Accept-Language", "zh_CN"))
+                .andExpect(status().isOk());
     }
 
     @Test
