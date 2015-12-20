@@ -5,7 +5,7 @@ import org.team10424102.blackserver.config.json.ImageSerializer;
 
 import javax.persistence.*;
 
-@JsonSerialize(using = ImageSerializer.class)
+//@JsonSerialize(using = ImageSerializer.class)
 @Entity
 @Table(name = "t_image")
 public class Image {

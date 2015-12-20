@@ -1,6 +1,7 @@
 package org.team10424102.blackserver.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
 import org.hibernate.SessionFactory;
 import org.hibernate.dialect.function.TemplateRenderer;
@@ -38,7 +39,9 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.*;
 import org.team10424102.blackserver.App;
+import org.team10424102.blackserver.config.json.ImageSerializer;
 import org.team10424102.blackserver.config.propertyeditors.UserResolver;
+import org.team10424102.blackserver.models.Image;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.spring4.SpringTemplateEngine;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
@@ -102,6 +105,12 @@ public class AppConfig {
             Hibernate5Module module = new Hibernate5Module();
             //module.enable(Hibernate5Module.Feature.FORCE_LAZY_LOADING);
             objectMapper.registerModule(module);
+
+            SimpleModule sm = new SimpleModule();
+            sm.addSerializer(Image.class, new ImageSerializer(context));
+            objectMapper.registerModule(sm);
+
+
             return objectMapper;
         }
 

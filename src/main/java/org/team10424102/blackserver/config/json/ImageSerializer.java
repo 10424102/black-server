@@ -10,6 +10,7 @@ import org.hibernate.proxy.LazyInitializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 import org.team10424102.blackserver.models.Image;
 import org.team10424102.blackserver.models.ImageRepo;
@@ -18,11 +19,15 @@ import org.team10424102.blackserver.services.TokenService;
 
 import java.io.IOException;
 
-@Component
 public class ImageSerializer extends JsonSerializer<Image> {
 
-    @Autowired TokenService tokenService;
-    @Autowired ImageRepo imageRepo;
+    private final TokenService tokenService;
+    private final ImageRepo imageRepo;
+
+    public ImageSerializer(ApplicationContext context) {
+        tokenService = context.getBean(TokenService.class);
+        imageRepo = context.getBean(ImageRepo.class);
+    }
 
     @Override
     public void serialize(Image image, JsonGenerator jg, SerializerProvider provider) throws IOException, JsonProcessingException {
@@ -37,8 +42,7 @@ public class ImageSerializer extends JsonSerializer<Image> {
 //            id = image.getId();
 //        }
 //        image = imageRepo.findOne(id);
-//        String token = tokenService.generateToken(image); // no session
-//        jg.writeString(token + "~" + image.getHash());
-        jg.writeString("fuck!!!");
+        String token = tokenService.generateToken(image); // no session
+        jg.writeString(token + "~" + image.getHash());
     }
 }

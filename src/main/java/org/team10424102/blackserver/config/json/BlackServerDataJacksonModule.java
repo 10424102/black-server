@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-@Component
+//@Component
 public class BlackServerDataJacksonModule extends SimpleModule {
 
     public static final int MAJOR_VERSION = 0;
