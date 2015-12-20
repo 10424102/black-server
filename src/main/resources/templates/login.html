@@ -1,16 +1,31 @@
-<form class="form-signin" role="form" method="post" action="/login">
-        <h2 class="form-signin-heading">Sign in</h2>
-        <label for="inputEmail" class="sr-only">Email address</label>
-        <input type="email" id="username" name="username" class="form-control" placeholder="Email address" required autofocus>
-        <label for="inputPassword" class="sr-only">Password</label>
-        <input type="password" id="password" name="password" class="form-control" placeholder="Password" required>
-				<div class="checkbox">
-				  <label>
-				  	<input type="checkbox" value="remember-me"> Remember me
-				  </label>
-				</div>
-				<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
-      </form>
+<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+  <div id="alerts-container" data-show="true" data-placement="top" data-duration="100" data-animation="am-fade-and-slide-top" data-keyboard="true" title="{{alert.title}}" data-content="{{alert.content}}" data-type="{{alert.type}}" data-container="#alerts-container"
+  bs-alert>
+  </div>
+  <div class="card card-container">
+    <img id="profile-img" ng-show="!authenticated" class="profile-img-card" src="../images/avatar_2x.png" th:src="@{../images/avatar_2x.png}" />
 
-  </div> <!-- /container -->
+    <p id="profile-name" class="profile-name-card"></p>
+
+    <form name="formSignIn" class="form-signin" role="form" ng-submit="userLogin()">
+      <span id="reauth-email" class="reauth-email"></span>
+      <input type="text" id="phone" name="phone" ng-model="login.phone" class="form-control" placeholder="手机号" required autofocus>
+      <input type="text" id="vcode" name="vcode" ng-model="login.vcode" class="form-control" placeholder="验证码" required>
+      <div id="remember" class="checkbox">
+        <label>
+          <input type="checkbox" value="remember-me"> 记住我
+        </label>
+        <span class="separator">&middot;</span>
+        <a href="/#/forgetPassword" class="forgot-password">
+                    忘记密码?
+                </a>
+      </div>
+      <button class="btn btn-lg btn-primary btn-block btn-signin" type="submit">登录</button>
+    </form>
+    <!-- /form -->
+  </div>
+  <!-- /card-container -->
+  <p class="text-center">
+    <span id="link-signup"><a href="#/register">创建帐号</a></span>
+  </p>
+</div>
