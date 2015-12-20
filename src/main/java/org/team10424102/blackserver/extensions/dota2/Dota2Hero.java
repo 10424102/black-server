@@ -8,7 +8,7 @@ import org.team10424102.blackserver.models.Image;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "T_DOTA2_HERO")
+@Table(name = "t_dota2_hero")
 public class Dota2Hero {
     @Id
     @GeneratedValue

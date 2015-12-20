@@ -10,7 +10,7 @@ import org.team10424102.blackserver.models.User;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "T_DOTA2_MATCH_RESULT")
+@Table(name = "t_dota2_match_result")
 @SuppressWarnings("unused")
 public class Dota2MatchResult {
     @Id

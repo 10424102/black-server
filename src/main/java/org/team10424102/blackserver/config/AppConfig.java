@@ -15,6 +15,7 @@ import org.springframework.context.support.ReloadableResourceBundleMessageSource
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.data.web.config.EnableSpringDataWebSupport;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -58,6 +59,7 @@ public class AppConfig {
 
     @Configuration
     @EnableWebMvc
+    @EnableSpringDataWebSupport
     protected static class WebMvcConfig extends WebMvcConfigurerAdapter {
 
         @Autowired EntityManagerFactory entityManagerFactory;
@@ -201,6 +203,7 @@ public class AppConfig {
         properties.put("hibernate.ddl-auto", "validate");
         properties.put("hibernate.physical_naming_strategy", "org.team10424102.blackserver.config.ImprovedNamingStrategy");
         properties.put("hibernate.format_sql", "true");
+        properties.put("hibernate.id.new_generator_mappings", "false");
         return properties;
     }
 

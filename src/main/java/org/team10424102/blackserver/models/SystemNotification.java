@@ -3,8 +3,10 @@ package org.team10424102.blackserver.models;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Entity
+@Table(name = "t_system_notification")
 public class SystemNotification {
     @Id
     @GeneratedValue

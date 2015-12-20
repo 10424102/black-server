@@ -1,13 +1,11 @@
 package org.team10424102.blackserver.extensions.poll;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
+@Table(name = "t_poll")
 public class Poll {
     @Id
     @GeneratedValue

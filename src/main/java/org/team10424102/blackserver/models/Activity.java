@@ -57,14 +57,14 @@ public class Activity {
     private UserGroup group;
 
     @OneToMany
-    @JoinTable(name = "T_ACTIVITY_IMAGE",
+    @JoinTable(name = "t_activity_image",
             joinColumns = @JoinColumn(name = "activity_id"),
             inverseJoinColumns = @JoinColumn(name = "image_id"))
     private Set<Image> photos = new HashSet<>();
 
 
     @OneToMany
-    @JoinTable(name = "T_ACTIVITY_COMMENTS",
+    @JoinTable(name = "t_activity_comments",
             joinColumns = @JoinColumn(name = "activity_id"),
             inverseJoinColumns = @JoinColumn(name = "post_id")
     )

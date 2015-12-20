@@ -6,7 +6,7 @@ import org.team10424102.blackserver.models.User;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "T_POLL_USER")
+@Table(name = "t_poll_user")
 public class Vote {
     @Id
     @GeneratedValue

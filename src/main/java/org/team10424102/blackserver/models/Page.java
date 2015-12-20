@@ -3,9 +3,10 @@ package org.team10424102.blackserver.models;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
-@SuppressWarnings("unused")
 @Entity
+@Table(name = "t_page")
 public class Page {
     @Id
     @GeneratedValue

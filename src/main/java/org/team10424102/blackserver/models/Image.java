@@ -7,6 +7,7 @@ import javax.persistence.*;
 
 @JsonSerialize(using = ImageSerializer.class)
 @Entity
+@Table(name = "t_image")
 public class Image {
     @Id
     @GeneratedValue

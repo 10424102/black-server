@@ -1,14 +1,12 @@
 package org.team10424102.blackserver.extensions.dota2;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
+@Table(name = "t_dota2_match")
 public class Dota2Match {
     @Id
     @GeneratedValue
