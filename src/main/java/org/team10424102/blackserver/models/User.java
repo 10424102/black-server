@@ -399,9 +399,7 @@ public class User {
         this.highschool = highschool;
     }
 
-    @JsonUnwrapped
     @JsonView(Views.UserDetails.class)
-    @JsonIgnore
     public College getCollege() {
         return college;
     }
@@ -410,7 +408,7 @@ public class User {
         this.college = college;
     }
 
-    @JsonIgnore
+    @JsonView(Views.UserDetails.class)
     public Academy getAcademy() {
         return academy;
     }
@@ -429,23 +427,23 @@ public class User {
     }
 
 
-    @JsonProperty("college")
-    @JsonView(Views.UserDetails.class)
-    public String getCollegeName() {
-        if (college != null) {
-            return college.getName();
-        }
-        return null;
-    }
+//    @JsonProperty("college")
+//    @JsonView(Views.UserDetails.class)
+//    public String getCollegeName() {
+//        if (college != null) {
+//            return college.getName();
+//        }
+//        return null;
+//    }
 
-    @JsonProperty("academy")
-    @JsonView(Views.UserDetails.class)
-    public String getAcademyName() {
-        if (academy != null) {
-            return academy.getName();
-        }
-        return null;
-    }
+//    @JsonProperty("academy")
+//    @JsonView(Views.UserDetails.class)
+//    public String getAcademyName() {
+//        if (academy != null) {
+//            return academy.getName();
+//        }
+//        return null;
+//    }
 
     @JsonIgnore
     public Set<User> getBlacklist() {
@@ -456,32 +454,32 @@ public class User {
         this.blacklist = blacklist;
     }
 
-    @JsonProperty("friends")
-    @JsonView(Views.UserDetails.class)
-    public long getFriendsCount() {
-        if (friendshipSet != null) {
-            return friendshipSet.size();
-        }
-        return 0;
-    }
+//    @JsonProperty("friends")
+//    @JsonView(Views.UserDetails.class)
+//    public long getFriendsCount() {
+//        if (friendshipSet != null) {
+//            return friendshipSet.size();
+//        }
+//        return 0;
+//    }
 
-    @JsonProperty("fans")
-    @JsonView(Views.UserDetails.class)
-    public long getFanssCount() {
-        if (fans != null) {
-            return fans.size();
-        }
-        return 0;
-    }
+//    @JsonProperty("fans")
+//    @JsonView(Views.UserDetails.class)
+//    public long getFanssCount() {
+//        if (fans != null) {
+//            return fans.size();
+//        }
+//        return 0;
+//    }
 
-    @JsonProperty("focuses")
-    @JsonView(Views.UserDetails.class)
-    public long getFocusesCount() {
-        if (focuses != null) {
-            return focuses.size();
-        }
-        return 0;
-    }
+//    @JsonProperty("focuses")
+//    @JsonView(Views.UserDetails.class)
+//    public long getFocusesCount() {
+//        if (focuses != null) {
+//            return focuses.size();
+//        }
+//        return 0;
+//    }
 
     @JsonIgnore
     public List<User> getFriends() {

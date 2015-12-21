@@ -102,8 +102,9 @@ public class AppConfig {
         @Bean
         public ObjectMapper objectMapper() {
             ObjectMapper objectMapper = new ObjectMapper();
-            Hibernate5Module module = new Hibernate5Module();
+            Hibernate5Module module = new Hibernate5Module(entityManagerFactory.unwrap(SessionFactory.class));
             //module.enable(Hibernate5Module.Feature.FORCE_LAZY_LOADING);
+            //module.enable(Hibernate5Module.Feature.REQUIRE_EXPLICIT_LAZY_LOADING_MARKER);
             objectMapper.registerModule(module);
 
             SimpleModule sm = new SimpleModule();
@@ -124,7 +125,7 @@ public class AppConfig {
             ServletContextTemplateResolver resolver = new ServletContextTemplateResolver();
             resolver.setPrefix("/templates/");
             resolver.setSuffix(".html");
-            resolver.setTemplateMode("HTML5");
+            resolver.setTemplateMode("LEGACYHTML5");
             return resolver;
         }
 
@@ -154,8 +155,7 @@ public class AppConfig {
                     .antMatchers(HttpMethod.GET, App.API_USER + "/token").permitAll()
                     .antMatchers(HttpMethod.HEAD, App.API_USER + "/token").permitAll()
                     .antMatchers(HttpMethod.HEAD, App.API_USER + "/phone").permitAll()
-                    .antMatchers("/beans").permitAll()
-                    .antMatchers("/health").permitAll()
+                    .antMatchers("/status").permitAll()
                     .anyRequest().authenticated()
                     .and().exceptionHandling().authenticationEntryPoint(unauthorizedEntryPoint());
         }

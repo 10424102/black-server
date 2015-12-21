@@ -42,7 +42,8 @@ public class ImageSerializer extends JsonSerializer<Image> {
 //            id = image.getId();
 //        }
 //        image = imageRepo.findOne(id);
-        String token = tokenService.generateToken(image); // no session
-        jg.writeString(token + "~" + image.getHash());
+//        String token = tokenService.generateToken(image); // no session
+//        jg.writeString(token + "~" + image.getHash());
+        jg.writeString("image-token-placeholder");
     }
 }

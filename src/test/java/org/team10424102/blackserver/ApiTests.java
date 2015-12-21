@@ -12,6 +12,7 @@ import java.util.Locale;
 import static org.hamcrest.CoreMatchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.team10424102.blackserver.App.*;
@@ -592,6 +593,11 @@ public class ApiTests extends BaseTests {
     @Test
     public void image_getImage() throws Exception {
         // TODO test: get image
+    }
+
+    @Test
+    public void public_getServerStatus() throws Exception {
+        mockMvc.perform(get("/status")).andExpect(jsonPath("$.status", equalTo("OK")));
     }
 
 }

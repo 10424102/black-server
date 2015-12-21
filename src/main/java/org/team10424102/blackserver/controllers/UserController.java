@@ -134,6 +134,7 @@ public class UserController {
      */
     @RequestMapping(method = GET)
     @JsonView(Views.UserDetails.class)
+    @Transactional(readOnly = true)
     public User getCurrentUsersProfile(@CurrentUser User user) {
         return user;
     }

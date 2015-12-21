@@ -6,6 +6,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.team10424102.blackserver.services.TokenService;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -18,13 +20,14 @@ import java.io.IOException;
 public class TokenAuthenticationFilter extends OncePerRequestFilter {
     public static final String HTTP_HEADER = "X-Token";
     private final TokenService tokenService;
+    private final EntityManager entityManager;
 
     public TokenAuthenticationFilter(ApplicationContext context) {
         tokenService  = context.getBean(TokenService.class);
+        entityManager = context.getBean(EntityManager.class);
     }
 
     @Override
-    @Transactional
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
         String token = request.getHeader(HTTP_HEADER);
