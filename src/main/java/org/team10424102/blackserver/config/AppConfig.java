@@ -18,7 +18,9 @@ import org.springframework.core.annotation.Order;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.data.web.config.EnableSpringDataWebSupport;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.hibernate4.support.OpenSessionInViewInterceptor;
@@ -50,6 +52,7 @@ import org.thymeleaf.templateresolver.TemplateResolver;
 import javax.persistence.EntityManagerFactory;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
+import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Properties;
 
@@ -95,7 +98,7 @@ public class AppConfig {
 
         @Override
         public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
-            argumentResolvers.add(new AuthenticationPrincipalArgumentResolver()); // TODO kill it
+            argumentResolvers.add(new AuthenticationPrincipalArgumentResolver()); // TODO kill it ?
             argumentResolvers.add(new UserResolver(context));
         }
 
@@ -103,8 +106,8 @@ public class AppConfig {
         public ObjectMapper objectMapper() {
             ObjectMapper objectMapper = new ObjectMapper();
             Hibernate5Module module = new Hibernate5Module(entityManagerFactory.unwrap(SessionFactory.class));
-            //module.enable(Hibernate5Module.Feature.FORCE_LAZY_LOADING);
-            //module.enable(Hibernate5Module.Feature.REQUIRE_EXPLICIT_LAZY_LOADING_MARKER);
+            module.enable(Hibernate5Module.Feature.FORCE_LAZY_LOADING);
+            module.enable(Hibernate5Module.Feature.REQUIRE_EXPLICIT_LAZY_LOADING_MARKER);
             objectMapper.registerModule(module);
 
             SimpleModule sm = new SimpleModule();
@@ -117,7 +120,9 @@ public class AppConfig {
 
         @Override
         public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-            converters.add(new MappingJackson2HttpMessageConverter(objectMapper()));
+            //converters.add(new MappingJackson2HttpMessageConverter(objectMapper()));
+            converters.add(new ByteArrayHttpMessageConverter());
+            converters.add(new StringHttpMessageConverter(Charset.forName("UTF-8")));
         }
 
         @Bean
@@ -208,7 +213,7 @@ public class AppConfig {
     private Properties hibernateProperties() {
         Properties properties = new Properties();
         properties.put("hibernate.dialect", "org.hibernate.dialect.MySQL5InnoDBDialect");
-        properties.put("hibernate.show_sql", "true");
+        properties.put("hibernate.show_sql", "false");
         properties.put("hibernate.ddl-auto", "validate");
         properties.put("hibernate.physical_naming_strategy", "org.team10424102.blackserver.config.ImprovedNamingStrategy");
         properties.put("hibernate.format_sql", "true");

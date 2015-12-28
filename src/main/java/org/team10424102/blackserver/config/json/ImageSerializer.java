@@ -20,6 +20,7 @@ import org.team10424102.blackserver.services.TokenService;
 import java.io.IOException;
 
 public class ImageSerializer extends JsonSerializer<Image> {
+    private static final Logger logger = LoggerFactory.getLogger(ImageSerializer.class);
 
     private final TokenService tokenService;
     private final ImageRepo imageRepo;
@@ -31,19 +32,17 @@ public class ImageSerializer extends JsonSerializer<Image> {
 
     @Override
     public void serialize(Image image, JsonGenerator jg, SerializerProvider provider) throws IOException, JsonProcessingException {
-//        long id = 0;
-//        if (image instanceof HibernateProxy) {
-//            HibernateProxy proxy = (HibernateProxy) image;
-//            LazyInitializer init = proxy.getHibernateLazyInitializer();
-//            if (init.isUninitialized()) {
-//                id  = (long)init.getIdentifier();
-//            }
-//        } else {
-//            id = image.getId();
-//        }
-//        image = imageRepo.findOne(id);
-//        String token = tokenService.generateToken(image); // no session
-//        jg.writeString(token + "~" + image.getHash());
-        jg.writeString("image-token-placeholder");
+        long id;
+        if (image instanceof HibernateProxy) {
+            HibernateProxy proxy = (HibernateProxy) image;
+            LazyInitializer init = proxy.getHibernateLazyInitializer();
+            id  = (long)init.getIdentifier();
+        } else {
+            id = image.getId();
+        }
+        image = imageRepo.findOne(id);
+        String token = tokenService.generateToken(image);
+        logger.debug("put image: {}", token);
+        jg.writeString(token + "~" + image.getHash());
     }
 }

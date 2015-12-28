@@ -1,9 +1,14 @@
 package org.team10424102.blackserver.controllers;
 
+import org.hibernate.proxy.HibernateProxy;
+import org.hibernate.proxy.LazyInitializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,10 +36,21 @@ public class ImageController {
      * 获取图片
      */
     @RequestMapping(method = GET, produces = MediaType.IMAGE_PNG_VALUE)
-    public byte[] getImage(@RequestParam String q) {
+    @Transactional(readOnly = true)
+    public ResponseEntity<byte[]> getImage(@RequestParam String q) {
         Image image = (Image)tokenService.getObjectFromToken(q);
+        if (image == null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        Long id;
+        if (image instanceof HibernateProxy) {
+            HibernateProxy proxy = (HibernateProxy) image;
+            LazyInitializer init = proxy.getHibernateLazyInitializer();
+            id  = (long)init.getIdentifier();
+        } else {
+            id = image.getId();
+        }
+        image = imageRepo.findOne(id);
         if (image == null) return null;
-        return image.getData();
+        return ResponseEntity.ok(image.getData());
     }
 
     /**

@@ -12,6 +12,6 @@ public class ApplicationLifecycleManager{
 
     @EventListener
     public void handleContextRefresh(ContextRefreshedEvent event) {
-        logger.info("服务器成功启动，撒花 (￣▽￣)o∠※PAN!=.:*:'☆.:*:'★':*");
+        logger.info(">>> 服务器成功启动，撒花 (￣▽￣)o∠※PAN!=.:*:'☆.:*:'★':*");
     }
 }

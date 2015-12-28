@@ -1,13 +1,13 @@
 package org.team10424102.blackserver.controllers;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.team10424102.blackserver.App;
 import org.team10424102.blackserver.config.json.Views;
 import org.team10424102.blackserver.config.CurrentUser;
@@ -46,6 +46,8 @@ public class UserController {
     @Autowired AddingFriendHandler addingFriendHandler;
     @Autowired RemovingFriendHandler removingFriendHandler;
 
+    @Autowired ObjectMapper objectMapper;
+
 
     /////////////////////////////////////////////////////////////////
     //                                                             //
@@ -68,7 +70,8 @@ public class UserController {
      * 如果手机号码不存在这里就是创建用户
      */
     @RequestMapping(value = "/token", method = GET)
-    public Api.Result getToken(@RequestParam String phone, @RequestParam String vcode, HttpServletRequest request) {
+    @ResponseBody
+    public String getToken(@RequestParam String phone, @RequestParam String vcode, HttpServletRequest request) throws JsonProcessingException{
         // TODO 使用 User 数据模型中 phone 属性的注解来对这里的 phone 做验证
         if (!vcodeService.verify("86", phone, vcode)) {
             throw new VcodeVerificationException(phone, vcode);
@@ -93,7 +96,7 @@ public class UserController {
         } else {
             user = userRepo.findByPhone(phone);
         }
-        return Api.result().param("token", generateToken(user));
+        return objectMapper.writeValueAsString(Api.result().param("token", generateToken(user)));
     }
 
     private String generateToken(User user) {
@@ -111,14 +114,16 @@ public class UserController {
      * }
      */
     @RequestMapping(value = "/{type}", method = HEAD)
-    public Api.Result isAvailable(@PathVariable String type, String q) {
+    public ResponseEntity isAvailable(@PathVariable String type, String q) {
         switch (type) {
             case "phone":
-                return Api.result().param("result", !userRepo.isPhoneExists(q));
+                if (userRepo.isPhoneExists(q)) return ResponseEntity.ok().build();
+                break;
             case "token":
-                return Api.result().param("result", tokenService.isTokenValid(q));
+                if (tokenService.isTokenValid(q)) return ResponseEntity.ok().build();
+                break;
         }
-        return Api.result().param("result", false);
+        return ResponseEntity.notFound().build();
     }
 
     /**
@@ -133,10 +138,9 @@ public class UserController {
      * 获取当前用户的个人信息
      */
     @RequestMapping(method = GET)
-    @JsonView(Views.UserDetails.class)
     @Transactional(readOnly = true)
-    public User getCurrentUsersProfile(@CurrentUser User user) {
-        return user;
+    public String getCurrentUsersProfile(@CurrentUser User user) throws JsonProcessingException{
+        return objectMapper.writerWithView(Views.UserDetails.class).writeValueAsString(userRepo.findOne(user.getId()));
     }
 
     /**

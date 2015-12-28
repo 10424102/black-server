@@ -1,11 +1,17 @@
 package org.team10424102.blackserver;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.jayway.restassured.RestAssured;
+import com.jayway.restassured.response.Response;
+import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.team10424102.blackserver.models.Notification;
+import org.team10424102.blackserver.utils.Cryptor;
 
 import java.util.Locale;
 
@@ -591,9 +597,51 @@ public class ApiTests extends BaseTests {
     }
 
     @Test
+    @Transactional(propagation = Propagation.NEVER)
+    @Rollback(false)
     public void image_getImage() throws Exception {
-        // TODO test: get image
+        MvcResult result = mockMvc.perform(get(API_ACTIVITY)
+                .header(AUTH_HEADER, getToken())
+                .param("category", "recommendations"))
+                .andExpect(status().isOk())
+                .andReturn();
+        printFormatedJsonString(result);
+        String s = mapper.readTree(result.getResponse().getContentAsString()).get(0).get("cover").asText();
+        String[] parts = s.split("~");
+        String token = parts[0];
+        String hash = parts[1];
+        MvcResult imageData = mockMvc.perform(get(API_IMAGE)
+                .header(AUTH_HEADER, getToken())
+                .param("q", token))
+                .andExpect(status().isOk())
+                .andReturn();
+        Assert.assertEquals("image/png", imageData.getResponse().getContentType());
+        byte[] data = imageData.getResponse().getContentAsByteArray();
+        Assert.assertEquals(hash, Cryptor.md5_hex(data));
     }
+
+    @Test
+    public void image_getImage_restAssured() throws Exception {
+        String result = RestAssured.given()
+                .header(AUTH_HEADER, getToken())
+                .param("category","recommendations")
+                .when().get(API_ACTIVITY)
+                .then().statusCode(200)
+                .extract().asString();
+        String s = mapper.readTree(result).get(0).get("cover").asText();
+        String[] parts = s.split("~");
+        String token = parts[0];
+        String hash = parts[1];
+        byte[] data = RestAssured.given()
+                .header(AUTH_HEADER, getToken())
+                .param("q", token)
+                .when().get(API_IMAGE)
+                .then().statusCode(200)
+                .extract().asByteArray();
+        Assert.assertEquals(hash, Cryptor.md5_hex(data));
+    }
+
+
 
     @Test
     public void public_getServerStatus() throws Exception {

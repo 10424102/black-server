@@ -3,6 +3,7 @@ package org.team10424102.blackserver.services;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
+import org.apache.commons.codec.binary.Hex;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.team10424102.blackserver.config.SpringSecurityUserAdapter;
@@ -22,8 +23,7 @@ public class TokenServiceEhcacheImpl implements TokenService {
         ByteBuffer bb = ByteBuffer.allocate(16);
         bb.putLong(uuid.getMostSignificantBits());
         bb.putLong(uuid.getLeastSignificantBits());
-        // url safe base64
-        String token = Base64.getUrlEncoder().encodeToString(bb.array());
+        String token = Hex.encodeHexString(bb.array());
         tokenCache.put(new Element(token, obj));
         // TODO 同一个用户可能会产生多个 token 放在缓存当中, 这是一种资源浪费
         // 理想的做法是先查询该 user 是否已经在缓存当中, 如果在则作废以前的 token, 生成一个新的 token

@@ -1,5 +1,6 @@
 package org.team10424102.blackserver;
 
+import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
@@ -36,7 +37,8 @@ public class App {
         context.register(AppConfig.class);
         context.getEnvironment().setDefaultProfiles("dev");
 
-        Server server = new Server(8080);
+        Server server = new Server(8080); // bind on 0.0.0.0
+
         ServletContextHandler handler = new ServletContextHandler();
         handler.setContextPath("/");
         handler.setResourceBase(new ClassPathResource("static").getURI().toString());

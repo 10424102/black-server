@@ -1,12 +1,12 @@
 package org.team10424102.blackserver.controllers;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.*;
 import org.team10424102.blackserver.App;
 import org.team10424102.blackserver.config.json.Views;
 import org.team10424102.blackserver.config.CurrentUser;
@@ -31,8 +31,8 @@ public class ActivityController {
     public static final String TYPE_MYSELF = "myself";
 
     @Autowired ActivityRecommendationRepo activityRecommendationRepo;
-
     @Autowired ActivityRepo activityRepo;
+    @Autowired ObjectMapper objectMapper;
 
     /**
      * 获取活动
@@ -41,8 +41,8 @@ public class ActivityController {
      *                 推荐活动, 校园活动, 朋友活动, 关注的人活动, 自己参加的活动
      */
     @RequestMapping(method = GET)
-    @JsonView(Views.ActivitySummary.class)
-    public List<Activity> getActivities(@RequestParam String category, Pageable pageable, @CurrentUser User user) {
+    @Transactional(readOnly = true)
+    public String getActivities(@RequestParam String category, Pageable pageable, @CurrentUser User user) throws JsonProcessingException{
         List<Activity> activities = null;
         switch (category.toLowerCase()) {
             case TYPE_RECOMMENDATIONS:
@@ -65,7 +65,7 @@ public class ActivityController {
                 activities = activityRepo.findByPromoter(user, pageable);
                 break;
         }
-        return activities;
+        return objectMapper.writerWithView(Views.ActivitySummary.class).writeValueAsString(activities);
     }
 
     /**
