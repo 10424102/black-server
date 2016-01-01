@@ -1,6 +1,8 @@
 package org.team10424102.blackserver.controllers;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.data.domain.Pageable;
@@ -16,6 +18,7 @@ import org.team10424102.blackserver.extensions.PostExtensionData;
 import org.team10424102.blackserver.models.Post;
 import org.team10424102.blackserver.models.PostLike;
 import org.team10424102.blackserver.models.User;
+import org.team10424102.blackserver.utils.Api;
 
 import javax.annotation.PostConstruct;
 import java.util.Collection;
@@ -35,6 +38,11 @@ public class PostController {
     public static final String TYPE_FOCUSES = "focuses";
     public static final String TYPE_MYSELF = "myself";
 
+    @Autowired PostRepo postRepo;
+    @Autowired ApplicationContext context;
+    @Autowired LikesRepo likesRepo;
+    @Autowired ObjectMapper objectMapper;
+
     private final Map<String, PostExtension> extensions = new ConcurrentHashMap<>();
 
     @PostConstruct
@@ -53,20 +61,14 @@ public class PostController {
         }
     }
 
-    @Autowired PostRepo postRepo;
-
-    @Autowired ApplicationContext context;
-
-    @Autowired LikesRepo likesRepo;
-
     /**
      * 获取不同类别的 post, 目前以比赛战绩为主
      *
      * @param category school|friends|focuses|myself 对应于校园战况, 朋友战况, 关注的人战况, 自己发的推文
      */
     @RequestMapping(method = GET)
-    @JsonView(Views.Post.class)
-    public List<Post> getPosts(@RequestParam String category, Pageable pageable, @CurrentUser User user) {
+    public String getPosts(@RequestParam String category, Pageable pageable, @CurrentUser User user)
+            throws JsonProcessingException {
         List<Post> posts = null;
         switch (category.toLowerCase()) {
             case TYPE_SCHOOL:
@@ -83,7 +85,7 @@ public class PostController {
                 break;
         }
         if (posts != null) posts.forEach(this::inflateExtensionData);
-        return posts;
+        return objectMapper.writeValueAsString(posts);
     }
 
     /**

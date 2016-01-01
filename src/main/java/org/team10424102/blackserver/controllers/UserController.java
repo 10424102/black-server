@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -147,60 +149,104 @@ public class UserController {
      * 查看其他用户的 Profile
      */
     @RequestMapping(value = "/{id}", method = GET)
-    @JsonView(Views.UserSummary.class)
-    public User getOthersProfile(@PathVariable long id) {
-        return userRepo.findOne(id);
+    @Transactional(readOnly = true)
+    public ResponseEntity<String> getOthersProfile(@PathVariable long id) throws JsonProcessingException {
+        User user = userRepo.findOne(id);
+        if (user == null) new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return ResponseEntity.ok(objectMapper.writerWithView(Views.UserSummary.class).writeValueAsString(user));
+    }
+
+//    /**
+//     * 更新当前用户的个人信息
+//     */
+//    @RequestMapping(method = PUT)
+//    @JsonView(Views.UserDetails.class)
+//    public User updateCurrentUsersProfile(@Valid User user) {
+//        return userRepo.save(user);
+//    }
+
+    /**
+     * 更新昵称
+     * @param val
+     * @param user
+     * @return
+     */
+    @RequestMapping(value = "/nickname", method = PATCH)
+    @Transactional
+    public void updateNickName(@RequestParam String val, @CurrentUser User user) {
+        user.setNickname(val);
+        userRepo.save(user);
     }
 
     /**
-     * 更新当前用户的个人信息
+     * 更新个性签名, 140个字符, 后面的内容会被截掉
+     * @param val
+     * @param user
+     * @return
      */
-    @RequestMapping(method = PUT)
-    @JsonView(Views.UserDetails.class)
-    public User updateCurrentUsersProfile(@Valid User user) {
-        return userRepo.save(user);
-    }
-
-    @RequestMapping(value = "/nickname", method = PATCH)
-    @JsonView(Views.UserDetails.class)
-    public User updateNickName(@RequestParam String val, @CurrentUser User user) {
-        user.setNickname(val);
-        return userRepo.save(user);
-    }
-
     @RequestMapping(value = "/signature", method = PATCH)
-    @JsonView(Views.UserDetails.class)
-    public User updateSignature(@RequestParam String val, @CurrentUser User user) {
+    @Transactional
+    public void updateSignature(@RequestParam String val, @CurrentUser User user) {
+        val = val.substring(0, 140);
         user.setSignature(val);
-        return userRepo.save(user);
+        userRepo.save(user);
     }
 
+    /**
+     * 更新个人生日
+     * @param val
+     * @param user
+     * @return
+     */
     @RequestMapping(value = "/birthday", method = PATCH)
-    @JsonView(Views.UserDetails.class)
-    public User updateBirthday(@RequestParam String val, @CurrentUser User user) {
+    @Transactional
+    public ResponseEntity<Void> updateBirthday(@RequestParam String val, @CurrentUser User user) {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         try {
             Date birthday = format.parse(val);
             user.setBirthday(birthday);
+            userRepo.save(user);
         } catch (ParseException e) {
-            throw new RequestDataFormatException("cannot parse " + val + " to yyyy-MM-dd");
+            return ResponseEntity.badRequest().build();
         }
-        return userRepo.save(user);
+        return ResponseEntity.ok().build();
     }
 
+    /**
+     * 更新性别
+     * @param val
+     * @param user
+     * @return
+     */
     @RequestMapping(value = "/gender", method = PATCH)
-    public User updateGender(@RequestParam String val, @CurrentUser User user) {
-        Gender gender = Gender.valueOf(val);
-        user.setGender(gender);
-        return userRepo.save(user);
+    @Transactional
+    public ResponseEntity<Void> updateGender(@RequestParam String val, @CurrentUser User user) {
+        try {
+            Gender gender = Gender.valueOf(val);
+            user.setGender(gender);
+            userRepo.save(user);
+        } catch (IllegalArgumentException|NullPointerException e) {
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok().build();
     }
 
-
+    /**
+     * 更新用户名, 冲突会返回 409
+     * @param val
+     * @param user
+     * @return
+     */
     @RequestMapping(value = "/username", method = PATCH)
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public User updateUsername(@RequestParam String val, @CurrentUser User user) {
-        user.setUsername(val);
-        return userRepo.save(user);
+    @Transactional
+    public ResponseEntity<Void> updateUsername(@RequestParam String val, @CurrentUser User user) {
+        try {
+            user.setUsername(val);
+            userRepo.save(user);
+        } catch (DataAccessException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
+        return ResponseEntity.ok().build();
     }
 //
 //    @RequestMapping(value = App.API_USER, method = PATCH)

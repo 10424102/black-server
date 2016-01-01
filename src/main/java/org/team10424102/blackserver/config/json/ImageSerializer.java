@@ -42,7 +42,7 @@ public class ImageSerializer extends JsonSerializer<Image> {
         }
         image = imageRepo.findOne(id);
         String token = tokenService.generateToken(image);
-        logger.debug("put image: {}", token);
+        //logger.debug("put image: {}", token);
         jg.writeString(token + "~" + image.getHash());
     }
 }
