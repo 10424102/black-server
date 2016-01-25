@@ -7,6 +7,8 @@ import org.springframework.http.converter.HttpMessageNotWritableException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.team10424102.blackserver.controllers.exceptions.BusinessException;
+import org.team10424102.blackserver.controllers.exceptions.VcodeVerificationException;
 
 @ControllerAdvice
 public class ExceptionController {
@@ -16,6 +18,12 @@ public class ExceptionController {
     @ExceptionHandler(HttpMessageNotWritableException.class)
     public void handleSpringHttpMessageNotWritable(HttpMessageNotWritableException exception) {
         logger.error("spring http message not writeable", exception);
+    }
+
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(BusinessException.class)
+    public void handleBusinessException(BusinessException exception) {
+        logger.info(exception.getMessage());
     }
 
 }

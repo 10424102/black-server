@@ -69,11 +69,12 @@ public class UserController {
      *     "token": token-string
      * }
      * <p>
-     * 如果手机号码不存在这里就是创建用户
+     * 如果手机号码不存在, 这里就是创建用户
      */
     @RequestMapping(value = "/token", method = GET)
     @ResponseBody
-    public String getToken(@RequestParam String phone, @RequestParam String vcode, HttpServletRequest request) throws JsonProcessingException{
+    public String getToken(@RequestParam String phone, @RequestParam String vcode, HttpServletRequest request)
+            throws JsonProcessingException{
         // TODO 使用 User 数据模型中 phone 属性的注解来对这里的 phone 做验证
         if (!vcodeService.verify("86", phone, vcode)) {
             throw new VcodeVerificationException(phone, vcode);

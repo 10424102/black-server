@@ -4,7 +4,7 @@ import org.team10424102.blackserver.controllers.Error;
 
 public class VcodeVerificationException extends BusinessException {
     public VcodeVerificationException(String phone, String vcode) {
-        super(String.format("短信验证码验证失败 [phone = %s, vode = %s]", phone, vcode));
+        super(String.format("短信验证码验证失败 [手机号 = %s, 验证码 = %s]", phone, vcode));
     }
 
     @Override
