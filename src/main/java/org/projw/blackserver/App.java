@@ -26,7 +26,6 @@ public class App implements WebApplicationInitializer {
     public static final String API_GAME = "/api/games";
     public static final String API_NOTIFICATION = "/api/notifications";
 
-
     @Override
     public void onStartup(ServletContext container) throws ServletException {
 
@@ -52,26 +51,4 @@ public class App implements WebApplicationInitializer {
         return context;
     }
 
-//    public static void main(String[] args) throws Exception {
-//        // 服务器使用 UTC 时间
-//        TimeZone.setDefault(TimeZone.getTimeZone("Etc/UTC"));
-//
-////        AnnotationConfigWebApplicationContext context = new AnnotationConfigWebApplicationContext();
-////        context.register(AppConfig.class);
-////        context.getEnvironment().setDefaultProfiles("dev");
-////
-////        Server server = new Server(8080); // bind on 0.0.0.0
-////
-////        ServletContextHandler handler = new ServletContextHandler();
-////        handler.setContextPath("/");
-////        handler.setResourceBase(new ClassPathResource("static").getURI().toString());
-////        handler.addServlet(new ServletHolder(new DispatcherServlet(context)), "/*");
-////        handler.addEventListener(new ContextLoaderListener(context));
-////        handler.addFilter(new FilterHolder(new DelegatingFilterProxy("springSecurityFilterChain")),
-////                "/*", EnumSet.allOf(DispatcherType.class));
-////        server.setHandler(handler);
-////
-////        server.start();
-////        server.join();
-//    }
 }
