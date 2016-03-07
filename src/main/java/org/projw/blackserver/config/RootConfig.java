@@ -155,6 +155,7 @@ public class RootConfig {
                     .httpBasic().disable()
                     .authorizeRequests()
                     .antMatchers("/", "/partials/**").permitAll()
+                    .antMatchers("/index.html").permitAll()
                     .antMatchers(HttpMethod.GET, App.API_USER + "/token").permitAll()
                     .antMatchers(HttpMethod.HEAD, App.API_USER + "/token").permitAll()
                     .antMatchers(HttpMethod.HEAD, App.API_USER + "/phone").permitAll()

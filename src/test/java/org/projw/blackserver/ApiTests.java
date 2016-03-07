@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.jayway.restassured.RestAssured;
 import org.junit.Assert;
 import org.junit.Test;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -22,45 +23,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.projw.blackserver.App.*;
 
 public class ApiTests extends BaseTests {
-
-    //@Test
-    public void user_getToken_withInvalidPhone() throws Exception {
-        //TODO 使用真正的手机短信验证框架后, 修改该测试
-        mockMvc.perform(get(API_USER + "/token")
-                .param("phone", "11111111111")
-                .param("vcode", "1234"))
-                .andExpect(status().isBadRequest());
-    }
-
-    // TODO expected = VcodeVerificationException.class
-    @Test(expected = Exception.class)
-    public void user_getToken_withInvalidVcode() throws Exception {
-        mockMvc.perform(get(API_USER + "/token")
-                .param("phone", "15610589653")
-                .param("vcode", "xxxx"));
-    }
-
-    @Test
-    public void user_getToken_withValidVcode() throws Exception {
-        //TODO 使用真正的手机短信验证框架后, 修改该测试
-        mockMvc.perform(get(API_USER + "/token")
-                .param("phone", "15610589653")
-                .param("vcode", "1234"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.token", anything()));
-    }
-
-    @Test
-    public void user_getToken_missingParameter() throws Exception {
-        mockMvc.perform(get(API_USER + "/token")
-                .param("phone", "15610589653"))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    public void user_unregisterAccount() throws Exception {
-        // TODO test: unregister account
-    }
 
     @Test
     public void user_getMyProfile() throws Exception {
@@ -112,47 +74,91 @@ public class ApiTests extends BaseTests {
 
     @Test
     public void user_updateNickname() throws Exception {
-        // TODO test: update nickname
+        mockMvc.perform(patch(API_USER + "/nickname")
+                .header(AUTH_HEADER, getToken())
+                .param("val", "nick"))
+                .andExpect(status().isOk());
     }
 
     @Test
     public void user_updateEmail() throws Exception {
-        // TODO test: update email
+        mockMvc.perform(patch(API_USER + "/email")
+                .header(AUTH_HEADER, getToken())
+                .param("val", "john@exmaple.com"))
+                .andExpect(status().isOk());
     }
 
     @Test
     public void user_updateSignature() throws Exception {
-        // TODO test: update signature
+        mockMvc.perform(patch(API_USER + "/signature")
+                .header(AUTH_HEADER, getToken())
+                .param("val", "今天好开心"))
+                .andExpect(status().isOk());
     }
 
     @Test
     public void user_updateGender() throws Exception {
-        // TODO test: update gender
+        mockMvc.perform(patch(API_USER + "/gender")
+                .header(AUTH_HEADER, getToken())
+                .param("val", "male"))
+                .andExpect(status().isOk());
     }
 
     @Test
     public void user_updateHighschool() throws Exception {
-        // TODO test: udpate highschool
+        mockMvc.perform(patch(API_USER + "/highschool")
+                .header(AUTH_HEADER, getToken())
+                .param("val", "某某高中"))
+                .andExpect(status().isOk());
     }
 
     @Test
     public void user_updateHometown() throws Exception {
-        // TODO test: update hometown
+        mockMvc.perform(patch(API_USER + "/hometown")
+                .header(AUTH_HEADER, getToken())
+                .param("val", "黑龙江"))
+                .andExpect(status().isOk());
     }
 
     @Test
     public void user_updateBirthday() throws Exception {
-        // TODO test: udpate birthday
+        mockMvc.perform(patch(API_USER + "/birthday")
+                .header(AUTH_HEADER, getToken())
+                .param("val", "1995-4-1"))
+                .andExpect(status().isOk());
     }
 
     @Test
     public void user_updateCollege() throws Exception {
-        // TODO test: update college (with academy and grade)
+        mockMvc.perform(patch(API_USER + "/college")
+                .header(AUTH_HEADER, getToken())
+                .param("val", "某某大学"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void user_updateAcademy() throws Exception {
+        mockMvc.perform(patch(API_USER + "/academy")
+                .header(AUTH_HEADER, getToken())
+                .param("val", "某某学院"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void user_updateGrade() throws Exception {
+        mockMvc.perform(patch(API_USER + "/grade")
+                .header(AUTH_HEADER, getToken())
+                .param("val", "大三"))
+                .andExpect(status().isOk());
     }
 
     @Test
     public void user_updateAvatar() throws Exception {
-        // TODO test: udpate avatar
+        MockMultipartFile avatarFile = new MockMultipartFile("avatar.png", getClass().getResourceAsStream("/test_avatar.png"));
+        mockMvc.perform(fileUpload(API_USER + "/avatar")
+                .file(avatarFile)
+                .header(AUTH_HEADER, getToken()))
+                .andExpect(status().isOk());
     }
 
     @Test

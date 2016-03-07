@@ -1,5 +1,6 @@
 package org.projw.blackserver;
 
+import org.projw.blackserver.config.RootConfig;
 import org.springframework.security.web.context.AbstractSecurityWebApplicationInitializer;
 import org.springframework.web.WebApplicationInitializer;
 import org.springframework.web.context.ContextLoaderListener;
@@ -29,10 +30,6 @@ public class App implements WebApplicationInitializer {
     @Override
     public void onStartup(ServletContext container) throws ServletException {
 
-        // ContextLoaderListener
-        // DispatcherServlet
-        // DelegatingFilterProxy springSecurityFilterChain
-
         WebApplicationContext context = getContext();
         container.addListener(new ContextLoaderListener(context));
 
@@ -43,11 +40,13 @@ public class App implements WebApplicationInitializer {
         String filterName = AbstractSecurityWebApplicationInitializer.DEFAULT_FILTER_NAME;
         container.addFilter(filterName, DelegatingFilterProxy.class)
                 .addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), false, "/*");
+
+
     }
 
     private AnnotationConfigWebApplicationContext getContext() {
         AnnotationConfigWebApplicationContext context = new AnnotationConfigWebApplicationContext();
-        context.setConfigLocation("org.projw.config.RootConfig");
+        context.register(RootConfig.class);
         return context;
     }
 
