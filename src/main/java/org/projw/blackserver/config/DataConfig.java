@@ -49,7 +49,7 @@ public class DataConfig {
     public LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource dataSource) {
         LocalContainerEntityManagerFactoryBean entityManagerFactoryBean = new LocalContainerEntityManagerFactoryBean();
         entityManagerFactoryBean.setDataSource(dataSource);
-        entityManagerFactoryBean.setPackagesToScan("org.projw.blackserver.models");
+        entityManagerFactoryBean.setPackagesToScan("org.projw.blackserver");
         entityManagerFactoryBean.setPersistenceProviderClass(HibernatePersistenceProvider.class);
         return entityManagerFactoryBean;
     }
